@@ -2,18 +2,8 @@
   <header class="app-header">
     <div class="container">
       <h1 class="logo"><RouterLink to="/">小兔鮮</RouterLink></h1>
-      <ul class="navs">
-        <li class="home"><RouterLink to="/">首頁</RouterLink></li>
-        <li><a href="#">美食</a></li>
-        <li><a href="#">餐廚</a></li>
-        <li><a href="#">藝術</a></li>
-        <li><a href="#">電器</a></li>
-        <li><a href="#">居家</a></li>
-        <li><a href="#">洗護</a></li>
-        <li><a href="#">孕嬰</a></li>
-        <li><a href="#">服裝</a></li>
-        <li><a href="#">雜貨</a></li>
-      </ul>
+      <!-- 頭部導航元件 -->
+      <AppHeaderNav />
       <div class="search">
         <i class="iconfont icon-search"></i>
         <input type="text" placeholder="搜一搜" />
@@ -28,8 +18,10 @@
 </template>
 
 <script>
+import AppHeaderNav from './app-header-nav.vue';
 export default {
   name: 'AppHeader',
+  components: { AppHeaderNav },
 };
 </script>
 
@@ -50,29 +42,7 @@ export default {
       background: url(../assets/images/logo.png) no-repeat center 18px / contain;
     }
   }
-  .navs {
-    width: 820px;
-    display: flex;
-    justify-content: space-around;
-    padding-left: 40px;
-    li {
-      margin-right: 40px;
-      width: 38px;
-      text-align: center;
-      a {
-        font-size: 16px;
-        line-height: 32px;
-        height: 32px;
-        display: inline-block;
-      }
-      &:hover {
-        a {
-          color: $xtxColor;
-          border-bottom: 1px solid $xtxColor;
-        }
-      }
-    }
-  }
+
   .search {
     width: 170px;
     height: 32px;
