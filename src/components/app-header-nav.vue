@@ -1,12 +1,19 @@
 <template>
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首頁</RouterLink></li>
-    <li v-for="item in list" :key="item.id">
-      <router-link to="/">{{ item.name }}</router-link>
-      <div class="layer">
+    <li
+      v-for="item in list"
+      :key="item.id"
+      @mouseenter="show(item)"
+      @mouseleave="hide(item)"
+    >
+      <router-link @click="hide(item)" :to="`/category/${item.id}`">{{
+        item.name
+      }}</router-link>
+      <div class="layer" :class="{ open: item.open }">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <router-link to="/">
+            <router-link @click="hide(item)" :to="`/category/sub/${sub.id}`">
               <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
             </router-link>
@@ -29,7 +36,18 @@ export default {
       return store.state.category.list;
     });
 
-    return { list };
+    // 跳轉時不會關閉二級類目, 通過資料來控制
+    // 1. vuex每個分類加上open資料
+    // 2. vuex提供顯示和隱藏函式, 修改當前open狀態
+    // 3. 在元件中使用vuex的函式, 使用事件來綁定, 提供一個類名顯示隱藏的類名
+    const show = (item) => {
+      store.commit('category/show', item.id);
+    };
+    const hide = (item) => {
+      store.commit('category/hide', item.id);
+    };
+
+    return { list, show, hide };
   },
 };
 </script>
@@ -57,17 +75,21 @@ export default {
         color: $xtxColor;
         border-bottom: 1px solid $xtxColor;
       }
-      // 顯示2級類目
-      > .layer {
-        height: 132px;
-        opacity: 1;
-      }
+      // 顯示2級類目 (hover控制)
+      // > .layer {
+      //   height: 132px;
+      //   opacity: 1;
+      // }
     }
   }
 }
 
 // 2級類目顯示
 .layer {
+  &.open {
+    height: 132px;
+    opacity: 1;
+  }
   width: 1240px;
   background-color: #fff;
   position: absolute;
