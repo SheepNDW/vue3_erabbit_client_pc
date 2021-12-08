@@ -1,3 +1,4 @@
+// 自訂重置樣式&公用樣式
 * {
   box-sizing: border-box;
 }
@@ -103,106 +104,106 @@ ul {
 }
 
 // 離開時候淡出動畫
-.fade {
-  &-leave {
-    &-active {
-      position: absolute;
-      width: 100%;
-      transition: opacity 0.5s 0.2s;
-      z-index: 1;
-    }
-    &-to {
-      opacity: 0;
-    }
-  }
-}
+// .fade {
+//   &-leave {
+//     &-active {
+//       position: absolute;
+//       width: 100%;
+//       transition: opacity 0.5s 0.2s;
+//       z-index: 1;
+//     }
+//     &-to {
+//       opacity: 0;
+//     }
+//   }
+// }
 
 // 麵包屑動畫
 // 進入：右側 20px的位移 透明度0  做過渡0.5s   本來位置 沒有位移 透明度1
 // 離開：本來位置 沒有位移 透明度1  做過渡0.5s  右側 20px的位移 透明度0
-.fade-right-enter-from,
-.fade-right-leave-to {
-  transform: translateX(20px);
-  opacity: 0;
-}
-.fade-right-enter-active,
-.fade-right-leave-active {
-  transition: all 0.5s;
-}
-.fade-right-enter-to,
-.fade-right-leave-from {
-  transform: none;
-  opacity: 1;
-}
+// .fade-right-enter-from,
+// .fade-right-leave-to {
+//   transform: translateX(20px);
+//   opacity: 0;
+// }
+// .fade-right-enter-active,
+// .fade-right-leave-active {
+//   transition: all 0.5s;
+// }
+// .fade-right-enter-to,
+// .fade-right-leave-from {
+//   transform: none;
+//   opacity: 1;
+// }
 
 // 表單
-.xtx-form {
-  padding: 50px 0;
-  &-item {
-    display: flex;
-    align-items: center;
-    width: 700px;
-    margin: 0 auto;
-    padding-bottom: 25px;
-    .label {
-      width: 180px;
-      padding-right: 10px;
-      text-align: right;
-      color: #999;
-      ~ .field {
-        margin-left: 0;
-      }
-    }
-    .field {
-      width: 320px;
-      height: 50px;
-      position: relative;
-      margin-left: 190px;
-      .icon {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 40px;
-        height: 50px;
-        text-align: center;
-        line-height: 50px;
-        color: #999;
-        ~ .input {
-          padding-left: 40px;
-        }
-      }
-      .input {
-        border: 1px solid #e4e4e4;
-        width: 320px;
-        height: 50px;
-        line-height: 50px;
-        padding: 0 10px;
-        &.err {
-          border-color: $priceColor;
-        }
-        &:focus,
-        &:active {
-          border-color: $xtxColor;
-        }
-      }
-    }
-    .error {
-      width: 180px;
-      padding-left: 10px;
-      color: $priceColor;
-    }
-  }
-  .submit {
-    width: 320px;
-    height: 50px;
-    border-radius: 4px;
-    background: $xtxColor;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #fff;
-    display: block;
-    margin: 0 auto;
-  }
-}
+// .xtx-form {
+//   padding: 50px 0;
+//   &-item {
+//     display: flex;
+//     align-items: center;
+//     width: 700px;
+//     margin: 0 auto;
+//     padding-bottom: 25px;
+//     .label {
+//       width: 180px;
+//       padding-right: 10px;
+//       text-align: right;
+//       color: #999;
+//       ~ .field {
+//         margin-left: 0;
+//       }
+//     }
+//     .field {
+//       width: 320px;
+//       height: 50px;
+//       position: relative;
+//       margin-left: 190px;
+//       .icon {
+//         position: absolute;
+//         left: 0;
+//         top: 0;
+//         width: 40px;
+//         height: 50px;
+//         text-align: center;
+//         line-height: 50px;
+//         color: #999;
+//         ~ .input {
+//           padding-left: 40px;
+//         }
+//       }
+//       .input {
+//         border: 1px solid #e4e4e4;
+//         width: 320px;
+//         height: 50px;
+//         line-height: 50px;
+//         padding: 0 10px;
+//         &.err {
+//           border-color: $priceColor;
+//         }
+//         &:focus,
+//         &:active {
+//           border-color: $xtxColor;
+//         }
+//       }
+//     }
+//     .error {
+//       width: 180px;
+//       padding-left: 10px;
+//       color: $priceColor;
+//     }
+//   }
+//   .submit {
+//     width: 320px;
+//     height: 50px;
+//     border-radius: 4px;
+//     background: $xtxColor;
+//     height: 50px;
+//     line-height: 50px;
+//     text-align: center;
+//     font-size: 16px;
+//     color: #fff;
+//     display: block;
+//     margin: 0 auto;
+//   }
+// }
