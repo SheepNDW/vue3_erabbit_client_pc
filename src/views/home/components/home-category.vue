@@ -71,9 +71,7 @@
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { findBrand } from '@/api/home';
-import xtxSkeleton from '@/components/library/xtx-skeleton.vue';
 export default {
-  components: { xtxSkeleton },
   name: 'HomeCategory',
   setup() {
     const store = useStore();
