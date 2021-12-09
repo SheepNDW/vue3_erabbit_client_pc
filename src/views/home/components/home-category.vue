@@ -1,7 +1,8 @@
 <template>
-  <div class="home-category">
+  <div class="home-category" @mouseleave="categoryId = null">
     <ul class="menu">
       <li
+        :class="{ active: categoryId === item.id }"
         v-for="item in menuList"
         :key="item.id"
         @mouseenter="categoryId = item.id"
@@ -20,15 +21,34 @@
     </ul>
     <!-- 彈層 -->
     <div class="layer">
-      <h4>分類推薦 <small>根據您的購買或瀏覽紀錄推薦</small></h4>
-      <ul v-if="currCatgory && currCatgory.goods">
-        <li v-for="item in currCatgory.goods" :key="item.id">
+      <h4>
+        {{ currCategory && currCategory.id === 'brand' ? '品牌' : '分類' }}推薦
+        <small>根據您的購買或瀏覽紀錄推薦</small>
+      </h4>
+      <!-- 商品 -->
+      <ul v-if="currCategory && currCategory.goods">
+        <li v-for="item in currCategory.goods" :key="item.id">
           <RouterLink to="/">
             <img :src="item.picture" />
             <div class="info">
               <p class="name ellipsis-2">{{ item.name }}</p>
               <p class="desc ellipsis">{{ item.desc }}</p>
               <p class="price"><i>¥</i>{{ item.price }}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
+      <!-- 品牌 -->
+      <ul v-if="currCategory && currCategory.brands">
+        <li class="brand" v-for="brand in currCategory.brands" :key="brand.id">
+          <RouterLink to="/">
+            <img :src="brand.picture" />
+            <div class="info">
+              <p class="place">
+                <i class="iconfont icon-dingwei"></i>{{ brand.place }}
+              </p>
+              <p class="name ellipsis">{{ brand.name }}</p>
+              <p class="desc ellipsis-2">{{ brand.desc }}</p>
             </div>
           </RouterLink>
         </li>
@@ -40,6 +60,7 @@
 <script>
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+import { findBrand } from '@/api/home';
 export default {
   name: 'HomeCategory',
   setup() {
@@ -48,10 +69,12 @@ export default {
       id: 'brand',
       name: '品牌',
       children: [{ id: 'brand-chilren', name: '品牌推荐' }],
+      // 品牌列表
+      brands: [],
     });
     const menuList = computed(() => {
       // 獲取9個分類且每個一級分類只有兩個子分類
-      const list = store.state.category.list.map((item) => {
+      const list = store.state.category.list.map(item => {
         return {
           id: item.id,
           name: item.name,
@@ -65,11 +88,16 @@ export default {
 
     // 得到彈出層的推薦商品資料
     const categoryId = ref(null);
-    const currCatgory = computed(() => {
-      return menuList.value.find((item) => item.id === categoryId.value);
+    const currCategory = computed(() => {
+      return menuList.value.find(item => item.id === categoryId.value);
     });
 
-    return { menuList, categoryId, currCatgory };
+    // 獲取品牌資料, 盡量避免在setup加上async
+    findBrand().then(data => {
+      brand.brands = data.result;
+    });
+
+    return { menuList, categoryId, currCategory };
   },
 };
 </script>
@@ -86,7 +114,8 @@ export default {
       padding-left: 40px;
       height: 50px;
       line-height: 50px;
-      &:hover {
+      &:hover,
+      &.active {
         background: $xtxColor;
       }
       a {
@@ -161,6 +190,25 @@ export default {
               i {
                 font-size: 16px;
               }
+            }
+          }
+        }
+      }
+      // 品牌的li樣式
+      li.brand {
+        height: 180px;
+        a {
+          align-items: flex-start;
+          img {
+            width: 120px;
+            height: 160px;
+          }
+          .info {
+            p {
+              margin-top: 8px;
+            }
+            .place {
+              color: #999;
             }
           }
         }
