@@ -33,3 +33,20 @@ export const findNew = () => {
 export const findHot = () => {
   return request('/home/hot', 'get')
 }
+
+/**
+ * 獲取商品區塊
+ * @returns Promise
+ */
+export const findGoods = () => {
+  return request('/home/goods', 'get')
+}
+
+/**
+ * 獲取最新專題
+ * @returns Promise
+ */
+export const findSpecial = () => {
+  return request('/home/special', 'get')
+}
+

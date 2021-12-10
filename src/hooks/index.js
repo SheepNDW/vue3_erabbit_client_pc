@@ -23,6 +23,10 @@ export const useLazyData = (apiFn) => {
         })
       }
     },
+    // 配置選項, 相交比例 > 0 就觸發
+    {
+      threshold: 0
+    }
   )
   return { result, target }
 }
