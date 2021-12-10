@@ -11,18 +11,21 @@
   <!-- 新鮮好物 -->
   <HomeNew />
   <!-- 人氣推薦 -->
+  <HomeHot />
 </template>
 
 <script>
 import HomeCategory from './components/home-category.vue';
 import HomeBanner from './components/home-banner.vue';
 import HomeNew from './components/home-new.vue';
+import HomeHot from './components/home-hot.vue';
 export default {
   name: 'HomePage',
   components: {
     HomeCategory,
     HomeBanner,
     HomeNew,
+    HomeHot,
   },
 };
 </script>
