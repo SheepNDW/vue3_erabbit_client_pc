@@ -1,9 +1,11 @@
 // 擴充vue原有的功能: 全局元件, 自定義指令, 掛載原型方法
 
+import defaultImg from '@/assets/images/200.png'
 import XtxSkeleton from './xtx-skeleton.vue'
 import XtxCarousel from './xtx-carousel.vue'
 import XtxMore from './xtx-more.vue'
-import defaultImg from '@/assets/images/200.png'
+import XtxBread from './xtx-bread.vue'
+import XtxBreadItem from './xtx-bread-item.vue'
 
 export default {
   install(app) {
@@ -12,6 +14,8 @@ export default {
     app.component(XtxSkeleton.name, XtxSkeleton)
     app.component(XtxCarousel.name, XtxCarousel)
     app.component(XtxMore.name, XtxMore)
+    app.component(XtxBread.name, XtxBread)
+    app.component(XtxBreadItem.name, XtxBreadItem)
     // 定義指令
     defineDirective(app)
   }
