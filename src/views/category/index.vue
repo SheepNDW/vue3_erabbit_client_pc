@@ -4,7 +4,11 @@
       <!-- 麵包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首頁</XtxBreadItem>
-        <XtxBreadItem>{{ topCategory.name }}</XtxBreadItem>
+        <Transition name="fade-right" mode="out-in">
+          <XtxBreadItem :key="topCategory.id">
+            {{ topCategory.name }}
+          </XtxBreadItem>
+        </Transition>
       </XtxBread>
       <!-- 輪播圖 -->
       <XtxCarousel :sliders="sliders" style="height: 500px" />
