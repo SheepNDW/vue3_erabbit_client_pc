@@ -17,3 +17,12 @@ export const findAllCategory = () => {
 export const findTopCategory = (id) => {
   return request('/category', 'get', { id })
 }
+
+/**
+ * 獲取2級類目下的篩選資料
+ * @param {String} id - 2級類目id
+ * @returns Promise
+ */
+export const findSubCategoryFilter = (id) => {
+  return request('/category/sub/filter', 'get', { id })
+}
