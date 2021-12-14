@@ -4,7 +4,7 @@
     <li
       v-for="item in list"
       :key="item.id"
-      @mouseenter="show(item)"
+      @mousemove="show(item)"
       @mouseleave="hide(item)"
     >
       <router-link @click="hide(item)" :to="`/category/${item.id}`">{{
@@ -40,10 +40,10 @@ export default {
     // 1. vuex每個分類加上open資料
     // 2. vuex提供顯示和隱藏函式, 修改當前open狀態
     // 3. 在元件中使用vuex的函式, 使用事件來綁定, 提供一個類名顯示隱藏的類名
-    const show = (item) => {
+    const show = item => {
       store.commit('category/show', item.id);
     };
-    const hide = (item) => {
+    const hide = item => {
       store.commit('category/hide', item.id);
     };
 

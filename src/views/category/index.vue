@@ -83,7 +83,8 @@ export default {
     watch(
       () => route.params.id,
       newValue => {
-        newValue && getSubList();
+        // newValue && getSubList(); 加上一個嚴謹的判斷: 在頂級類目下才發送請求
+        if (newValue && `/category/${newValue}` === route.path) getSubList();
       },
       { immediate: true }
     );
