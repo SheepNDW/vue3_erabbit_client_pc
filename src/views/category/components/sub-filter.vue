@@ -4,7 +4,7 @@
       <div class="head">品牌:</div>
       <div class="body">
         <a
-          @click="filterData.brands.selectedBrand = item.id"
+          @click="changeBrand(item.id)"
           :class="{ active: item.id === filterData.brands.selectedBrand }"
           href="javascript:;"
           v-for="item in filterData.brands"
@@ -18,7 +18,7 @@
       <div class="head">{{ item.name }}:</div>
       <div class="body">
         <a
-          @click="item.selectedProp = prop.id"
+          @click="changeProp(item, prop.id)"
           :class="{ active: prop.id === item.selectedProp }"
           href="javascript:;"
           v-for="prop in item.properties"
@@ -45,7 +45,7 @@ import { useRoute } from 'vue-router';
 import { findSubCategoryFilter } from '@/api/category';
 export default {
   name: 'SubFilter',
-  setup() {
+  setup(props, { emit }) {
     const route = useRoute();
     // 監聽二級類目ID的變化獲取篩選資料
     const filterData = ref(null);
@@ -77,7 +77,37 @@ export default {
       { immediate: true }
     );
 
-    return { filterData, filterLoading };
+    // 獲取篩選參數的函式
+    const getFilterParams = () => {
+      const obj = { brandId: null, attrs: [] };
+      // 品牌
+      obj.brandId = filterData.value.brands.selectedBrand;
+      // 銷售屬性
+      filterData.value.saleProperties.forEach(item => {
+        if (item.selectedProp) {
+          const prop = item.properties.find(prop => prop.id === item.selectedProp);
+          obj.attrs.push({ groupName: item.name, propertyName: prop.name });
+        }
+      });
+      // 參考資料: {brandId:'', attrs:[ {groupName:''}, {propertyName:''},...]}
+      if (obj.attrs.length === 0) obj.attrs = null;
+      return obj;
+    };
+
+    // 1.記錄當前選擇的品牌
+    const changeBrand = brandId => {
+      if (filterData.value.brands.selectedBrand === brandId) return;
+      filterData.value.brands.selectedBrand = brandId;
+      emit('filter-change', getFilterParams());
+    };
+    // 2.記錄你選擇的銷售屬性
+    const changeProp = (item, propId) => {
+      if (item.selectedProp === propId) return;
+      item.selectedProp = propId;
+      emit('filter-change', getFilterParams());
+    };
+
+    return { filterData, filterLoading, changeBrand, changeProp };
   },
 };
 </script>

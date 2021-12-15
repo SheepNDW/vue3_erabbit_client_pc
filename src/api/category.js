@@ -26,3 +26,11 @@ export const findTopCategory = (id) => {
 export const findSubCategoryFilter = (id) => {
   return request('/category/sub/filter', 'get', { id })
 }
+
+/**
+ * 獲取分類下的商品 (帶篩選條件)
+ * @param {Object} params - 可參考接口文檔
+ */
+export const findSubCategoryGoods = (params) => {
+  return request('/category/goods/temporary', 'post', params)
+}
