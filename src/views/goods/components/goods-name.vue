@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-g-name {
+.g-name {
   font-size: 22px;
 }
 .g-desc {
