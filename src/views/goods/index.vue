@@ -21,7 +21,7 @@
         <div class="spec">
           <GoodsName :goods="goods" />
           <!-- sku元件 -->
-          <GoodsSku :goods="goods" />
+          <GoodsSku :goods="goods" skuId="1369155865461919746" @change="changeSku" />
         </div>
       </div>
       <!-- 商品推薦 -->
@@ -56,7 +56,15 @@ export default {
   setup() {
     // 1. 獲取商品詳情, 進行渲染
     const goods = useGoods();
-    return { goods };
+    const changeSku = sku => {
+      // 修改商品的現價 原價 庫存資訊
+      if (sku.skuId) {
+        goods.value.prive = sku.price;
+        goods.value.OldPrice = sku.OldPrice;
+        goods.value.inventory = sku.inventory;
+      }
+    };
+    return { goods, changeSku };
   },
 };
 // 獲取商品詳情

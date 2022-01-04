@@ -82,6 +82,16 @@ const updateDisabledStatus = (specs, pathMap) => {
     });
   });
 };
+// 默認選中
+const initDefaultSelected = (goods, skuId) => {
+  // 1. 找出sku的信息
+  // 2. 遍歷每個按鈕, 按鈕的值和sku記錄的值相同, 就選中
+  const sku = goods.skus.find(sku => sku.id === skuId);
+  goods.specs.forEach((item, i) => {
+    const val = item.values.find(val => val.name === sku.specs[i].valueName);
+    val.selected = true;
+  });
+};
 
 export default {
   name: 'GoodsSku',
@@ -90,9 +100,17 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    skuId: {
+      type: String,
+      default: '',
+    },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const pathMap = getPathMap(props.goods.skus);
+    // 根據skuId初始化選中
+    if (props.skuId) {
+      initDefaultSelected(props.goods, props.skuId);
+    }
     // ☆元件初始化: 更新按鈕禁用狀態
     updateDisabledStatus(props.goods.specs, pathMap);
     // 1. 選中與取消選中, 約定在每一個按鈕都擁有自己的選中狀態資料: selected
@@ -112,6 +130,30 @@ export default {
       }
       // ☆點擊按鈕時: 更新按鈕禁用狀態
       updateDisabledStatus(props.goods.specs, pathMap);
+
+      // 將你選擇的sku訊息通知父元件 {skuId,price,oldPrice,inventory,specsText}
+      // 1. 選擇完整的sku組合按鈕, 才可以拿到這些訊息, 提交到父元件
+      // 2. 不是完整的sku組合按鈕, 提交空物件給父元件
+      const validSelectedValues = getSelectedValues(props.goods.specs).filter(v => v);
+      if (validSelectedValues.length === props.goods.specs.length) {
+        // 完整
+        const skuIds = pathMap[validSelectedValues.join(spliter)];
+        const sku = props.goods.skus.find(sku => sku.id === skuIds[0]);
+        emit('change', {
+          skuId: sku.id,
+          price: sku.price,
+          oldPrice: sku.oldPrice,
+          inventory: sku.inventory,
+          // 屬性名: 屬性值 屬性名1: 屬性值1 ... 這樣的字串
+          specsText: sku.specs
+            .reduce((p, c) => `${p} ${c.name}: ${c.valueName}`, '')
+            .trim(),
+        });
+      } else {
+        // 不完整
+        // 父元件需要判斷是否規格選擇完整, 不完整不能加入購物車
+        emit('change', {});
+      }
     };
 
     return { changeSku };
