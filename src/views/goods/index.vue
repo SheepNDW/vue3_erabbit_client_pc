@@ -21,7 +21,11 @@
         <div class="spec">
           <GoodsName :goods="goods" />
           <!-- sku元件 -->
-          <GoodsSku :goods="goods" skuId="1369155865461919746" @change="changeSku" />
+          <GoodsSku :goods="goods" @change="changeSku" />
+          <!-- 數量選擇元件 -->
+          <XtxNumbox label="数量" v-model="num" :max="goods.inventory" />
+          <!-- 按鈕元件 -->
+          <XtxButton type="primary" style="margin-top: 20px">加入購物車</XtxButton>
         </div>
       </div>
       <!-- 商品推薦 -->
@@ -64,7 +68,11 @@ export default {
         goods.value.inventory = sku.inventory;
       }
     };
-    return { goods, changeSku };
+
+    // 選擇的數量
+    const num = ref(1);
+
+    return { goods, changeSku, num };
   },
 };
 // 獲取商品詳情
