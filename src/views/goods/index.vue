@@ -34,7 +34,7 @@
       <div class="goods-footer">
         <div class="goods-article">
           <!-- 商品+評價 -->
-          <div class="goods-tabs"></div>
+          <GoodsTabs />
           <!-- 注意事項 -->
           <div class="goods-warn"></div>
         </div>
@@ -54,9 +54,10 @@ import GoodsImage from './components/goods-image.vue';
 import GoodsSales from './components/goods-sales.vue';
 import GoodsName from './components/goods-name.vue';
 import GoodsSku from './components/goods-sku.vue';
+import GoodsTabs from './components/goods-tabs.vue';
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs },
   setup() {
     // 1. 獲取商品詳情, 進行渲染
     const goods = useGoods();
@@ -128,10 +129,10 @@ const useGoods = () => {
     min-height: 1000px;
   }
 }
-.goods-tabs {
-  min-height: 600px;
-  background: #fff;
-}
+// .goods-tabs {
+//   min-height: 600px;
+//   background: #fff;
+// }
 .goods-warn {
   min-height: 600px;
   background: #fff;
