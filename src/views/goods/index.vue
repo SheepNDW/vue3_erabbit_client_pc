@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, provide, ref, watch } from 'vue';
 import { findGoods } from '@/api/product';
 import { useRoute } from 'vue-router';
 import GoodsRelevant from './components/goods-relevant.vue';
@@ -81,6 +81,9 @@ export default {
         goods.value.inventory = sku.inventory;
       }
     };
+
+    // 提供goods資料給後代元件使用
+    provide('goods', goods);
 
     // 選擇的數量
     const num = ref(1);

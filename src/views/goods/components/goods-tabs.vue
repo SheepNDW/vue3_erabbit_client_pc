@@ -13,7 +13,7 @@
         :class="{ active: activeName === 'GoodsComment' }"
         href="javascript:;"
       >
-        商品評價<span>(500+)</span>
+        商品評價<span>({{ goods.commentCount }})</span>
       </a>
     </nav>
     <!-- 切換内容的地方 -->
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import GoodsDetail from './goods-detail.vue';
 import GoodsComment from './goods-comment.vue';
 export default {
@@ -33,7 +33,11 @@ export default {
   setup() {
     // activeName的值: GoodsDetail GoodsComment
     const activeName = ref('GoodsDetail');
-    return { activeName };
+
+    // goods詳情資料
+    const goods = inject('goods');
+
+    return { activeName, goods };
   },
 };
 </script>
