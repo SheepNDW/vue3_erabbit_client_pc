@@ -17,3 +17,13 @@ export const findGoods = (id) => {
 export const findRelevantGoods = ({ id, limit = 16 }) => {
   return request('/goods/relevant', 'get', { id, limit })
 }
+
+/**
+ * 獲取熱銷榜資料
+ * @param {String} id - 商品id
+ * @param {Integer} limit - 商品數量
+ * @param {Integer} type - 熱銷類型, 1為24hr 2為週榜 3為總榜 默認值為1
+ */
+export const findGoodsHot = ({ id, limit = 3, type = 1 }) => {
+  return request('/goods/hot', 'get', { id, limit, type })
+}

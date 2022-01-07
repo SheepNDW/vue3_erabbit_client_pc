@@ -38,8 +38,11 @@
           <!-- 注意事項 -->
           <div class="goods-warn"></div>
         </div>
-        <!-- 24熱綁+專題推薦 -->
-        <div class="goods-aside"></div>
+        <!-- 24熱榜+週榜 -->
+        <div class="goods-aside">
+          <GoodsHot />
+          <GoodsHot :type="2" />
+        </div>
       </div>
     </div>
   </div>
@@ -55,9 +58,18 @@ import GoodsSales from './components/goods-sales.vue';
 import GoodsName from './components/goods-name.vue';
 import GoodsSku from './components/goods-sku.vue';
 import GoodsTabs from './components/goods-tabs.vue';
+import GoodsHot from './components/goods-hot.vue';
 export default {
   name: 'XtxGoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs },
+  components: {
+    GoodsRelevant,
+    GoodsImage,
+    GoodsSales,
+    GoodsName,
+    GoodsSku,
+    GoodsTabs,
+    GoodsHot,
+  },
   setup() {
     // 1. 獲取商品詳情, 進行渲染
     const goods = useGoods();
