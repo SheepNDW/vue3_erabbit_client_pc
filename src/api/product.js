@@ -27,3 +27,23 @@ export const findRelevantGoods = ({ id, limit = 16 }) => {
 export const findGoodsHot = ({ id, limit = 3, type = 1 }) => {
   return request('/goods/hot', 'get', { id, limit, type })
 }
+
+/**
+ * 查詢商品評價資訊
+ * @param {String} id - 商品id 
+ */
+export const findGoodsCommentInfo = (id) => {
+  // return request(`/goods/${id}/evaluate`, 'get')
+  // axios遇見 http https 開頭的地址, 不會加上基準地址
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate`, 'get')
+}
+
+/**
+ * 查詢商品評價列表
+ * @param {String} id - 商品id 
+ * @param {Object} params - 篩選條件 
+ */
+export const findGoodsCommentList = (id, params) => {
+  // return request(`/goods/${id}/evaluate`, 'get')
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate/page`, 'get', params)
+}
