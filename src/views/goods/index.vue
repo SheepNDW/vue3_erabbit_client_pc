@@ -36,7 +36,7 @@
           <!-- 商品+評價 -->
           <GoodsTabs />
           <!-- 注意事項 -->
-          <div class="goods-warn"></div>
+          <GoodsWarn />
         </div>
         <!-- 24熱榜+週榜 -->
         <div class="goods-aside">
@@ -59,6 +59,7 @@ import GoodsName from './components/goods-name.vue';
 import GoodsSku from './components/goods-sku.vue';
 import GoodsTabs from './components/goods-tabs.vue';
 import GoodsHot from './components/goods-hot.vue';
+import GoodsWarn from './components/goods-warn.vue';
 export default {
   name: 'XtxGoodsPage',
   components: {
@@ -69,6 +70,7 @@ export default {
     GoodsSku,
     GoodsTabs,
     GoodsHot,
+    GoodsWarn,
   },
   setup() {
     // 1. 獲取商品詳情, 進行渲染
