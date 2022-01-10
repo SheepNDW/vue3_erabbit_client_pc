@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div class="sort">
+    <div class="sort" v-if="commentInfo">
       <span>排序 : </span>
       <a
         @click="changeSort(null)"
@@ -72,6 +72,14 @@
         </div>
       </div>
     </div>
+    <!-- 分頁元件 -->
+    <XtxPagination
+      v-if="total"
+      @current-change="changePagerFn"
+      :total="total"
+      :page-size="reqParams.pageSize"
+      :current-page="reqParams.page"
+    />
   </div>
 </template>
 <script>
@@ -142,11 +150,13 @@ export default {
 
     // 初始化需要發請求並且篩選條件發生改變也要發請求
     const commentList = ref([]);
+    const total = ref(0);
     watch(
       reqParams,
       () => {
-        findGoodsCommentList(goods.id, reqParams).then(data => {
+        findGoodsCommentList(goods.value.id, reqParams).then(data => {
           commentList.value = data.result.items;
+          total.value = data.result.counts;
         });
       },
       { immediate: true }
@@ -160,6 +170,11 @@ export default {
       return nickname.substr(0, 1) + '****' + nickname.substr(-1);
     };
 
+    // 實現分頁切換
+    const changePagerFn = newPage => {
+      reqParams.page = newPage;
+    };
+
     return {
       commentInfo,
       currentTagIndex,
@@ -169,6 +184,8 @@ export default {
       changeSort,
       formatSpecs,
       formatNickname,
+      total,
+      changePagerFn,
     };
   },
 };
