@@ -60,9 +60,9 @@
             <i v-for="i in 5 - item.score" :key="i + 'k'" class="iconfont icon-wjx02"></i>
             <span class="attr">{{ formatSpecs(item.orderInfo.specs) }}</span>
           </div>
-          <div class="text">
-            {{ item.content }}
-          </div>
+          <div class="text">{{ item.content }}</div>
+          <!-- 評論圖片元件 -->
+          <GoodsCommentImage v-if="item.pictures.length" :pictures="item.pictures" />
           <div class="time">
             <span>{{ item.createTime }}</span>
             <span class="zan"
@@ -77,8 +77,10 @@
 <script>
 import { inject, reactive, ref, watch } from 'vue';
 import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product';
+import GoodsCommentImage from './goods-comment-image.vue';
 export default {
   name: 'GoodsComment',
+  components: { GoodsCommentImage },
   setup() {
     // 獲取評價資訊
     const commentInfo = ref(null);
