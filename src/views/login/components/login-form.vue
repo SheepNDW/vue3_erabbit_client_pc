@@ -8,7 +8,13 @@
         <i class="iconfont icon-msg"></i> 使用簡訊登入
       </a>
     </div>
-    <Form class="form" :validation-schema="schema" v-slot="{ errors }" autocomplete="off">
+    <Form
+      ref="formRef"
+      class="form"
+      :validation-schema="schema"
+      v-slot="{ errors }"
+      autocomplete="off"
+    >
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
@@ -29,11 +35,15 @@
           <div class="input">
             <i class="iconfont icon-lock"></i>
             <Field
+              :class="{ error: errors.password }"
               v-model="form.password"
               name="password"
               type="password"
               placeholder="請輸入密碼"
             />
+          </div>
+          <div class="error" v-if="errors.password">
+            <i class="iconfont icon-warning" />{{ errors.password }}
           </div>
         </div>
       </template>
@@ -42,36 +52,47 @@
           <div class="input">
             <i class="iconfont icon-user"></i>
             <Field
+              :class="{ error: errors.mobile }"
               v-model="form.mobile"
               name="mobile"
               type="text"
               placeholder="請輸入手機號碼"
             />
           </div>
+          <div class="error" v-if="errors.mobile">
+            <i class="iconfont icon-warning" />{{ errors.mobile }}
+          </div>
         </div>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-code"></i>
             <Field
+              :class="{ error: errors.code }"
               v-model="form.code"
               name="code"
-              type="password"
+              type="text"
               placeholder="請輸入驗證碼"
             />
             <span class="code">發送驗證碼</span>
+          </div>
+          <div class="error" v-if="errors.code">
+            <i class="iconfont icon-warning" />{{ errors.code }}
           </div>
         </div>
       </template>
       <div class="form-item">
         <div class="agree">
-          <XtxCheckbox v-model="form.isAgree" />
+          <Field as="XtxCheckbox" name="isAgree" v-model="form.isAgree" />
           <span>我已同意</span>
           <a href="javascript:;">《隱私條款》</a>
           <span>和</span>
           <a href="javascript:;">《服務條款》</a>
         </div>
+        <div class="error" v-if="errors.isAgree">
+          <i class="iconfont icon-warning" />{{ errors.isAgree }}
+        </div>
       </div>
-      <a href="javascript:;" class="btn">登入</a>
+      <a @click="login" href="javascript:;" class="btn">登入</a>
     </Form>
     <div class="action">
       <img
@@ -87,7 +108,7 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { Form, Field } from 'vee-validate';
 import schema from '@/utils/vee-validate-schema';
 export default {
@@ -109,12 +130,38 @@ export default {
     // 1. 匯入 Form Field 元件, 將 form 和 input 替換掉, 需要加上name用來指定將來的校驗規則函式
     // 2. Field 需要進行資料綁定, 字段名稱最好和後台接口需要的一致
     // 3. 定義Field的name屬性指定的校驗規則函式, Form的validation-schema接收定義好的校驗規則(物件)
+    // 4. 自定義元件需要校驗必須先支持 v-model 然後Field使用as指定為元件名稱
     const mySchema = {
       // 校驗函式規則: 返回true就是成功, 返回字符串就是失敗, 字符串就是錯誤提示
       account: schema.account,
+      password: schema.password,
+      mobile: schema.mobile,
+      code: schema.code,
+      isAgree: schema.isAgree,
     };
 
-    return { isMsgLogin, form, schema: mySchema };
+    // 監聽isMsgLogin重置表單 (資料 + 清除校驗結果)
+    const formRef = ref(null);
+    watch(isMsgLogin, () => {
+      // 重置資料
+      form.isAgree = true;
+      form.account = null;
+      form.password = null;
+      form.moblie = null;
+      form.code = null;
+      // 如果沒有銷毀Field元件, 之前的校驗結果是不會銷毀的 例如: v-show切換的
+      // Form元件提供了一個 resetForm 函式清除校驗結果
+      formRef.value.resetForm();
+    });
+
+    // 需要在點擊登入的時候對整體表單進行校驗
+    const login = async () => {
+      // Form元件提供了一個 validate 函式作為整體表單校驗, 但是返回的是一個promise
+      const valid = await formRef.value.validate();
+      console.log(valid);
+    };
+
+    return { isMsgLogin, form, schema: mySchema, formRef, login };
   },
 };
 </script>
