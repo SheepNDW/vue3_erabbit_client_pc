@@ -111,6 +111,7 @@
 import { reactive, ref, watch } from 'vue';
 import { Form, Field } from 'vee-validate';
 import schema from '@/utils/vee-validate-schema';
+import Message from '@/components/library/Message';
 export default {
   name: 'LoginForm',
   components: { Form, Field },
@@ -154,11 +155,16 @@ export default {
       formRef.value.resetForm();
     });
 
+    // 在setup中獲取元件實例 proxy
+    // const { proxy } = getCurrentInstance();
+    // proxy.$message({ text: '111' });
+
     // 需要在點擊登入的時候對整體表單進行校驗
     const login = async () => {
       // Form元件提供了一個 validate 函式作為整體表單校驗, 但是返回的是一個promise
       const valid = await formRef.value.validate();
       console.log(valid);
+      Message({ type: 'error', text: '用戶名或密碼錯誤' });
     };
 
     return { isMsgLogin, form, schema: mySchema, formRef, login };

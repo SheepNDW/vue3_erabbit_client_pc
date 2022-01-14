@@ -7,6 +7,7 @@ import defaultImg from '@/assets/images/200.png'
 // import XtxBread from './xtx-bread.vue'
 // import XtxBreadItem from './xtx-bread-item.vue'
 
+import Message from './Message'
 
 // 導入library資料夾下的所有元件
 // 批量導入需要使用一个函式 require.context(dir,deep,matching)
@@ -33,6 +34,9 @@ export default {
 
     // 定義指令
     defineDirective(app)
+
+    // 定義一個原型函式
+    app.config.globalProperties.$message = Message
   }
 }
 
