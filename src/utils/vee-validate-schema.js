@@ -17,7 +17,9 @@ export default {
   mobile(value) {
     if (!value) return '請輸入手機號碼'
     // 規則: 09開頭, 任意8個數字結尾
-    if (!/^09\d{8}$/.test(value)) return '手機格式不正確'
+    // if (!/^09\d{8}$/.test(value)) return '手機格式不正確'
+    // 中國手機格式
+    if (!/^1[3-9]\d{9}$/.test(value)) return '手機格式不正確'
     return true
   },
   code(value) {
