@@ -112,6 +112,9 @@ import { reactive, ref, watch } from 'vue';
 import { Form, Field } from 'vee-validate';
 import schema from '@/utils/vee-validate-schema';
 import Message from '@/components/library/Message';
+import { userAccountLogin } from '@/api/user';
+import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
 export default {
   name: 'LoginForm',
   components: { Form, Field },
@@ -160,11 +163,44 @@ export default {
     // proxy.$message({ text: '111' });
 
     // 需要在點擊登入的時候對整體表單進行校驗
+    const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
     const login = async () => {
       // Form元件提供了一個 validate 函式作為整體表單校驗, 但是返回的是一個promise
       const valid = await formRef.value.validate();
-      console.log(valid);
-      Message({ type: 'error', text: '用戶名或密碼錯誤' });
+      // console.log(valid);
+      // Message({ type: 'error', text: '用戶名或密碼錯誤' });
+      // 1. 準備一個api做帳號登入
+      // 2. 調用api函式
+      // 3. 成功: 儲存用戶訊息 + 跳轉至來源頁或是首頁 + 消息提示
+      // 4. 失敗: 消息提示
+      if (valid) {
+        const { account, password } = form;
+        userAccountLogin({ account, password })
+          .then(data => {
+            // 儲存用戶訊息
+            const { id, account, avatar, mobile, nickname, token } = data.result;
+            store.commit('user/setUser', {
+              id,
+              account,
+              avatar,
+              mobile,
+              nickname,
+              token,
+            });
+            // 進行跳轉
+            router.push(route.query.redirectUrl || '/');
+            // 成功消息提示
+            Message({ type: 'success', text: '登入成功! ' });
+          })
+          .catch(err => {
+            // 失敗提示
+            if (err.response.data) {
+              Message({ type: 'error', text: err.response.data.message || '登入失敗! ' });
+            }
+          });
+      }
     };
 
     return { isMsgLogin, form, schema: mySchema, formRef, login };
