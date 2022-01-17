@@ -8,7 +8,7 @@
               <i class="iconfont icon-user"></i>{{ profile.account }}
             </a>
           </li>
-          <li><a href="javascript:;">退出登入</a></li>
+          <li><a @click="logout" href="javascript:;">退出登入</a></li>
         </template>
         <template v-else>
           <li><router-link to="/login">請先登入</router-link></li>
@@ -29,6 +29,7 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 export default {
   name: 'AppTopnav',
   setup() {
@@ -38,7 +39,17 @@ export default {
     const profile = computed(() => {
       return store.state.user.profile;
     });
-    return { profile };
+
+    // 退出登入
+    // 1. 清空本地儲存訊息和vuex的用戶訊息
+    // 2. 跳轉登入
+    const router = useRouter();
+    const logout = () => {
+      store.commit('user/setUser', {});
+      router.push('/login');
+    };
+
+    return { profile, logout };
   },
 };
 </script>
