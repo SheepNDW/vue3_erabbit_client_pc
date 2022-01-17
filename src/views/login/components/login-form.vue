@@ -73,7 +73,9 @@
               type="text"
               placeholder="請輸入驗證碼"
             />
-            <span class="code">發送驗證碼</span>
+            <span @click="send" class="code">
+              {{ timer === 0 ? '發送驗證碼' : `${timer}秒後發送` }}
+            </span>
           </div>
           <div class="error" v-if="errors.code">
             <i class="iconfont icon-warning" />{{ errors.code }}
@@ -108,13 +110,14 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, watch, onUnmounted } from 'vue';
 import { Form, Field } from 'vee-validate';
 import schema from '@/utils/vee-validate-schema';
 import Message from '@/components/library/Message';
-import { userAccountLogin } from '@/api/user';
+import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/api/user';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
+import { useIntervalFn } from '@vueuse/core';
 export default {
   name: 'LoginForm',
   components: { Form, Field },
@@ -169,41 +172,80 @@ export default {
     const login = async () => {
       // Form元件提供了一個 validate 函式作為整體表單校驗, 但是返回的是一個promise
       const valid = await formRef.value.validate();
-      // console.log(valid);
-      // Message({ type: 'error', text: '用戶名或密碼錯誤' });
-      // 1. 準備一個api做帳號登入
-      // 2. 調用api函式
-      // 3. 成功: 儲存用戶訊息 + 跳轉至來源頁或是首頁 + 消息提示
-      // 4. 失敗: 消息提示
       if (valid) {
-        const { account, password } = form;
-        userAccountLogin({ account, password })
-          .then(data => {
-            // 儲存用戶訊息
-            const { id, account, avatar, mobile, nickname, token } = data.result;
-            store.commit('user/setUser', {
-              id,
-              account,
-              avatar,
-              mobile,
-              nickname,
-              token,
-            });
-            // 進行跳轉
-            router.push(route.query.redirectUrl || '/');
-            // 成功消息提示
-            Message({ type: 'success', text: '登入成功! ' });
-          })
-          .catch(err => {
-            // 失敗提示
-            if (err.response.data) {
-              Message({ type: 'error', text: err.response.data.message || '登入失敗! ' });
-            }
-          });
+        try {
+          let data = null;
+          if (isMsgLogin.value) {
+            // **手機登入
+            // 2.1 準備一個api做手機登入
+            // 2.2 調用api函式
+            // 2.3 成功: 儲存用戶訊息 + 跳轉至來源頁或是首頁 + 消息提示
+            // 2.4 失敗: 消息提示
+            const { moblie, code } = form;
+            data = await userMobileLogin({ moblie, code });
+          } else {
+            // **帳號登入
+            // 1. 準備一個api做帳號登入
+            // 2. 調用api函式
+            // 3. 成功: 儲存用戶訊息 + 跳轉至來源頁或是首頁 + 消息提示
+            // 4. 失敗: 消息提示
+            const { account, password } = form;
+            data = await userAccountLogin({ account, password });
+          }
+          // 儲存用戶訊息
+          const { id, account, avatar, mobile, nickname, token } = data.result;
+          store.commit('user/setUser', { id, account, avatar, mobile, nickname, token });
+          // 進行跳轉
+          router.push(route.query.redirectUrl || '/');
+          // 成功消息提示
+          Message({ type: 'success', text: '登入成功! ' });
+        } catch (err) {
+          if (err.response.data) {
+            Message({ type: 'error', text: err.response.data.message || '登入失敗! ' });
+          }
+        }
       }
     };
 
-    return { isMsgLogin, form, schema: mySchema, formRef, login };
+    // pause 暫停 resume 開始
+    // useIntervalFn(callback,執行間隔,是否立即開啟)
+    const timer = ref(0);
+    const { pause, resume } = useIntervalFn(
+      () => {
+        timer.value--;
+        if (timer.value <= 0) {
+          pause();
+        }
+      },
+      1000,
+      false
+    );
+    onUnmounted(() => {
+      pause();
+    });
+
+    // 1. 發送驗證碼
+    // 1.1 綁定發送驗證碼按鈕點擊事件
+    // 1.2 校驗手機號碼, 如果成功才去發送簡訊 (定義api), 請求成功後開啟60s倒計時, 不能再次點擊, 倒計時結束恢復
+    // 1.3 如果失敗, 失敗的校驗樣式顯示出來
+    const send = async () => {
+      const valid = mySchema.mobile(form.mobile);
+      if (valid === true) {
+        // 通過
+        if (timer.value === 0) {
+          // 沒有倒計時才可以發送
+          await userMobileLoginMsg(form.moblie);
+          Message({ type: 'success', text: '發送成功! ' });
+          timer.value = 60;
+          resume();
+        }
+      } else {
+        // 失敗, 使用vee的錯誤函式顯示錯誤訊息 setFieldError(字段,錯誤訊息)
+        formRef.value.setFieldError('mobile', valid);
+      }
+    };
+
+    return { isMsgLogin, form, schema: mySchema, formRef, login, send, timer };
   },
 };
 </script>
