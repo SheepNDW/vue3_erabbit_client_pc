@@ -25,7 +25,9 @@
           <!-- 數量選擇元件 -->
           <XtxNumbox label="数量" v-model="num" :max="goods.inventory" />
           <!-- 按鈕元件 -->
-          <XtxButton type="primary" style="margin-top: 20px">加入購物車</XtxButton>
+          <XtxButton @click="insertCart()" type="primary" style="margin-top: 20px"
+            >加入購物車</XtxButton
+          >
         </div>
       </div>
       <!-- 商品推薦 -->
@@ -60,6 +62,8 @@ import GoodsSku from './components/goods-sku.vue';
 import GoodsTabs from './components/goods-tabs.vue';
 import GoodsHot from './components/goods-hot.vue';
 import GoodsWarn from './components/goods-warn.vue';
+import { useStore } from 'vuex';
+import Message from '@/components/library/Message';
 export default {
   name: 'XtxGoodsPage',
   components: {
@@ -82,6 +86,8 @@ export default {
         goods.value.OldPrice = sku.OldPrice;
         goods.value.inventory = sku.inventory;
       }
+      // 記錄選擇後的sku, 可能有資料也可能是空物件{}
+      currSku.value = sku;
     };
 
     // 提供goods資料給後代元件使用
@@ -90,7 +96,37 @@ export default {
     // 選擇的數量
     const num = ref(1);
 
-    return { goods, changeSku, num };
+    // 加入購物車
+    const store = useStore();
+    const currSku = ref(null);
+    const insertCart = () => {
+      if (currSku.value && currSku.value.skuId) {
+        // id skuId name attrsText picture price nowPrice selected stock count isEffective
+        const { skuId, specsText: attrsText, inventory: stock } = currSku.value;
+        const { id, name, price, mainPictures } = goods.value;
+        store
+          .dispatch('cart/insertCart', {
+            skuId,
+            attrsText,
+            stock,
+            id,
+            name,
+            price,
+            nowPrice: price,
+            picture: mainPictures[0],
+            selected: true,
+            isEffective: true,
+            count: num.value,
+          })
+          .then(() => {
+            Message({ type: 'success', text: '添加成功! ' });
+          });
+      } else {
+        Message({ text: '請選擇完整的規格' });
+      }
+    };
+
+    return { goods, changeSku, num, insertCart };
   },
 };
 // 獲取商品詳情
