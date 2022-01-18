@@ -8,6 +8,21 @@ export default {
       list: []
     }
   },
+  getters: {
+    // 有效商品列表
+    validList(state) {
+      // 有效商品: 庫存(stock)>0, 有效標誌(isEffective)為true
+      return state.list.filter(item => item.stock > 0 && item.isEffective)
+    },
+    // 有效商品總件數
+    validTotal(state, getters) {
+      return getters.validList.reduce((p, c) => p + c.count, 0)
+    },
+    // 有效商品總金額
+    validAmount(state, getters) {
+      return getters.validList.reduce((p, c) => p + c.nowPrice * 100 * c.count, 0) / 100
+    }
+  },
   mutations: {
     // 加入購物車
     insertCart(state, payload) {
