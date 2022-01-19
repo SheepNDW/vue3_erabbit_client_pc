@@ -24,7 +24,12 @@
           <!-- 有效商品 -->
           <tbody>
             <tr v-for="goods in $store.getters['cart/validList']" :key="goods.skuId">
-              <td><XtxCheckbox :modelValue="goods.selected" /></td>
+              <td>
+                <XtxCheckbox
+                  @change="$event => checkOne(goods.skuId, $event)"
+                  :modelValue="goods.selected"
+                />
+              </td>
               <td>
                 <div class="goods">
                   <RouterLink :to="`/product/${goods.id}`">
@@ -113,9 +118,19 @@
 </template>
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant';
+import { useStore } from 'vuex';
 export default {
   name: 'XtxCartPage',
   components: { GoodRelevant },
+  setup() {
+    const store = useStore();
+
+    // 單選
+    const checkOne = (skuId, selected) => {
+      store.dispatch('cart/updateCart', { skuId, selected });
+    };
+    return { checkOne };
+  },
 };
 </script>
 

@@ -124,13 +124,26 @@ export default {
     },
     // 刪除購物車商品
     deleteCart(ctx, payload) {
-      // 單條刪除 payload 就是skuId
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登入
         } else {
           // 未登入
+          // 單條刪除 payload 就是skuId
           ctx.commit('deleteCart', payload)
+          resolve()
+        }
+      })
+    },
+    // 修改購物車 (選中狀態, 數量)
+    updateCart(ctx, payload) {
+      return new Promise((resolve) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登入
+        } else {
+          // 未登入
+          // payload 需要: 必需有skuId 可能: selected count
+          ctx.commit('updateCart', payload)
           resolve()
         }
       })
