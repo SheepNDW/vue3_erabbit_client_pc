@@ -1,18 +1,21 @@
 <template>
   <div class="cart">
     <!-- 購物車icon -->
-    <a class="curr" href="javascript:;">
+    <RouterLink class="curr" to="/cart">
       <i class="iconfont icon-cart"></i><em>{{ $store.getters['cart/validTotal'] }}</em>
-    </a>
+    </RouterLink>
     <!-- 購物車彈層 -->
-    <div class="layer">
+    <div
+      class="layer"
+      v-if="$store.getters['cart/validTotal'] > 0 && $route.path !== '/cart'"
+    >
       <div class="list">
         <div
           class="item"
           v-for="item in $store.getters['cart/validList']"
           :key="item.skuId"
         >
-          <RouterLink to="">
+          <RouterLink :to="`/product/${item.id}`">
             <img :src="item.picture" alt="" />
             <div class="center">
               <p class="name ellipsis-2">{{ item.name }}</p>
@@ -23,7 +26,7 @@
               <p class="count">{{ item.count }}</p>
             </div>
           </RouterLink>
-          <i class="iconfont icon-close-new"></i>
+          <i @click="deleteCart(item.skuId)" class="iconfont icon-close-new"></i>
         </div>
       </div>
       <div class="foot">
@@ -31,7 +34,7 @@
           <p>共 {{ $store.getters['cart/validTotal'] }} 件商品</p>
           <p>&yen;{{ $store.getters['cart/validAmount'] }}</p>
         </div>
-        <XtxButton type="plain">去購物車結帳</XtxButton>
+        <XtxButton @click="$router.push('/cart')" type="plain">去購物車結帳</XtxButton>
       </div>
     </div>
   </div>
@@ -47,6 +50,13 @@ export default {
     store.dispatch('cart/findCart').then(() => {
       Message({ type: 'success', text: '更新本地購物車成功' });
     });
+
+    // 刪除函式
+    const deleteCart = skuId => {
+      store.dispatch('cart/deleteCart', skuId);
+    };
+
+    return { deleteCart };
   },
 };
 </script>

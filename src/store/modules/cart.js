@@ -56,6 +56,11 @@ export default {
           updateGoods[key] = goods[key]
         }
       }
+    },
+    // 刪除購物車商品
+    deleteCart(state, skuId) {
+      const index = state.list.findIndex(item => item.skuId === skuId)
+      state.list.splice(index, 1)
     }
   },
   actions: {
@@ -73,7 +78,6 @@ export default {
     },
     // 獲取商品列表
     findCart(ctx) {
-      // eslint-disable-next-line no-unused-vars
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登入
@@ -94,7 +98,20 @@ export default {
             })
             // 調用 resolve 代表操作成功
             resolve()
-          })
+          }).catch(e => reject(e))
+        }
+      })
+    },
+    // 刪除購物車商品
+    deleteCart(ctx, payload) {
+      // 單條刪除 payload 就是skuId
+      return new Promise((resolve) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登入
+        } else {
+          // 未登入
+          ctx.commit('deleteCart', payload)
+          resolve()
         }
       })
     }
