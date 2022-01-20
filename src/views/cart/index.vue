@@ -10,7 +10,9 @@
           <thead>
             <tr>
               <th width="120">
-                <XtxCheckbox :modelValue="$store.getters['cart/isCheckAll']"
+                <XtxCheckbox
+                  @change="checkAll"
+                  :modelValue="$store.getters['cart/isCheckAll']"
                   >全選</XtxCheckbox
                 >
               </th>
@@ -23,6 +25,11 @@
           </thead>
           <!-- 有效商品 -->
           <tbody>
+            <tr v-if="$store.getters['cart/validList'].length === 0">
+              <td colspan="6">
+                <CartNone />
+              </td>
+            </tr>
             <tr v-for="goods in $store.getters['cart/validList']" :key="goods.skuId">
               <td>
                 <XtxCheckbox
@@ -58,7 +65,11 @@
               </td>
               <td class="tc">
                 <p><a href="javascript:;">移入收藏夹</a></p>
-                <p><a class="green" href="javascript:;">删除</a></p>
+                <p>
+                  <a @click="deleteCart(goods.skuId)" class="green" href="javascript:;"
+                    >删除</a
+                  >
+                </p>
                 <p><a href="javascript:;">找相似</a></p>
               </td>
             </tr>
@@ -89,7 +100,11 @@
                 <p>&yen;{{ (Math.round(goods.nowPrice * 100) * goods.count) / 100 }}</p>
               </td>
               <td class="tc">
-                <p><a class="green" href="javascript:;">删除</a></p>
+                <p>
+                  <a @click="deleteCart(goods.skuId)" class="green" href="javascript:;"
+                    >删除</a
+                  >
+                </p>
                 <p><a href="javascript:;">找相似</a></p>
               </td>
             </tr>
@@ -99,7 +114,9 @@
       <!-- 操作欄 -->
       <div class="action">
         <div class="batch">
-          <XtxCheckbox :modelValue="$store.getters['cart/isCheckAll']">全選</XtxCheckbox>
+          <XtxCheckbox @change="checkAll" :modelValue="$store.getters['cart/isCheckAll']"
+            >全選</XtxCheckbox
+          >
           <a href="javascript:;">刪除商品</a>
           <a href="javascript:;">移入收藏夾</a>
           <a href="javascript:;">清空失效商品</a>
@@ -118,10 +135,12 @@
 </template>
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant';
+import CartNone from './components/cart-none';
 import { useStore } from 'vuex';
+import Message from '@/components/library/Message';
 export default {
   name: 'XtxCartPage',
-  components: { GoodRelevant },
+  components: { GoodRelevant, CartNone },
   setup() {
     const store = useStore();
 
@@ -129,7 +148,20 @@ export default {
     const checkOne = (skuId, selected) => {
       store.dispatch('cart/updateCart', { skuId, selected });
     };
-    return { checkOne };
+
+    // 全選
+    const checkAll = selected => {
+      store.dispatch('cart/checkAllCart', selected);
+    };
+
+    // 刪除
+    const deleteCart = skuId => {
+      store.dispatch('cart/deleteCart', skuId).then(() => {
+        Message({ type: 'success', text: '刪除成功! ' });
+      });
+    };
+
+    return { checkOne, checkAll, deleteCart };
   },
 };
 </script>

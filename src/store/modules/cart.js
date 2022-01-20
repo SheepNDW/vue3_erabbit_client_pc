@@ -147,6 +147,20 @@ export default {
           resolve()
         }
       })
+    },
+    // 全選與取消全選
+    checkAllCart(ctx, selected) {
+      return new Promise((resolve) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登入
+        } else {
+          // 未登入
+          ctx.getters.validList.forEach(goods => {
+            ctx.commit('updateCart', { skuId: goods.skuId, selected })
+          })
+          resolve()
+        }
+      })
     }
   }
 }
