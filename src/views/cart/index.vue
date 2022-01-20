@@ -56,7 +56,11 @@
                 </p>
               </td>
               <td class="tc">
-                <XtxNumbox :modelValue="goods.count" />
+                <XtxNumbox
+                  @change="$event => updateCount(goods.skuId, $event)"
+                  :max="goods.stock"
+                  :modelValue="goods.count"
+                />
               </td>
               <td class="tc">
                 <p class="f16 red">
@@ -175,7 +179,12 @@ export default {
         .catch(() => {});
     };
 
-    return { checkOne, checkAll, deleteCart, batchDeleteCart };
+    // 修改數量
+    const updateCount = (skuId, count) => {
+      store.dispatch('cart/updateCart', { skuId, count });
+    };
+
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, updateCount };
   },
 };
 </script>
