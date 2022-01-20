@@ -119,7 +119,7 @@
           >
           <a @click="batchDeleteCart" href="javascript:;">刪除商品</a>
           <a href="javascript:;">移入收藏夾</a>
-          <a href="javascript:;">清空失效商品</a>
+          <a @click="batchDeleteCart(true)" href="javascript:;">清空失效商品</a>
         </div>
         <div class="total">
           共 {{ $store.getters['cart/validTotal'] }} 件商品，已選擇
@@ -166,11 +166,11 @@ export default {
         .catch(() => {});
     };
 
-    // 批量刪除選中商品
-    const batchDeleteCart = () => {
-      Confirm({ text: '您確認要從購物車刪除已選中商品嗎?' })
+    // 批量刪除選中商品, 也支持清空無效商品
+    const batchDeleteCart = isClear => {
+      Confirm({ text: `您確認要從購物車刪除${isClear ? '失效的' : '已選中的'}商品嗎?` })
         .then(() => {
-          store.dispatch('cart/batchDeleteCart');
+          store.dispatch('cart/batchDeleteCart', isClear);
         })
         .catch(() => {});
     };

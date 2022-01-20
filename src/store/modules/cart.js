@@ -163,14 +163,15 @@ export default {
       })
     },
     // 批量刪除
-    batchDeleteCart(ctx) {
+    batchDeleteCart(ctx, isClear) {
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登入
         } else {
           // 未登入
           // 找出選中的商品列表, 遍歷調用刪除的mutations
-          ctx.getters.selectedList.forEach(item => {
+          // isClear為true, 刪除失效商品列表, 否則是選中商品列表
+          ctx.getters[isClear ? 'invalidList' : 'selectedList'].forEach(item => {
             ctx.commit('deleteCart', item.skuId)
           })
           resolve()
