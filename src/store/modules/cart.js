@@ -177,6 +177,26 @@ export default {
           resolve()
         }
       })
+    },
+    // 修改規格
+    updateCartSku(ctx, { oldSkuId, newSku }) {
+      return new Promise((resolve) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登入
+        } else {
+          // 未登入
+          // 1. 找出舊的商品訊息
+          // 2. 刪除舊商品資料
+          // 3. 根據新的sku訊息和舊的商品訊息, 合併成一條新的購物車商品資料
+          // 4. 添加新的商品
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          ctx.commit('deleteCart', oldSkuId)
+          const { skuId, price: nowPrice, specsText: attrsText, inventory: stock } = newSku
+          const newGoods = { ...oldGoods, skuId, nowPrice, attrsText, stock }
+          ctx.commit('insertCart', newGoods)
+          resolve()
+        }
+      })
     }
   }
 }

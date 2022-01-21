@@ -45,6 +45,11 @@
                   <div>
                     <p class="name ellipsis">{{ goods.name }}</p>
                     <!-- 選擇規格元件 -->
+                    <CartSku
+                      @change="$event => updateCartSku(goods.skuId, $event)"
+                      :skuId="goods.skuId"
+                      :attrsText="goods.attrsText"
+                    />
                   </div>
                 </div>
               </td>
@@ -68,10 +73,10 @@
                 </p>
               </td>
               <td class="tc">
-                <p><a href="javascript:;">移入收藏夹</a></p>
+                <p><a href="javascript:;">移入收藏夾</a></p>
                 <p>
                   <a @click="deleteCart(goods.skuId)" class="green" href="javascript:;"
-                    >删除</a
+                    >刪除</a
                   >
                 </p>
                 <p><a href="javascript:;">找相似</a></p>
@@ -121,7 +126,7 @@
           <XtxCheckbox @change="checkAll" :modelValue="$store.getters['cart/isCheckAll']"
             >全選</XtxCheckbox
           >
-          <a @click="batchDeleteCart" href="javascript:;">刪除商品</a>
+          <a @click="batchDeleteCart()" href="javascript:;">刪除商品</a>
           <a href="javascript:;">移入收藏夾</a>
           <a @click="batchDeleteCart(true)" href="javascript:;">清空失效商品</a>
         </div>
@@ -140,12 +145,13 @@
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant';
 import CartNone from './components/cart-none';
+import CartSku from './components/cart-sku';
 import { useStore } from 'vuex';
 import Message from '@/components/library/Message';
 import Confirm from '@/components/library/Confirm';
 export default {
   name: 'XtxCartPage',
-  components: { GoodRelevant, CartNone },
+  components: { GoodRelevant, CartNone, CartSku },
   setup() {
     const store = useStore();
 
@@ -184,7 +190,19 @@ export default {
       store.dispatch('cart/updateCart', { skuId, count });
     };
 
-    return { checkOne, checkAll, deleteCart, batchDeleteCart, updateCount };
+    // 修改規格
+    const updateCartSku = (oldSkuId, newSku) => {
+      store.dispatch('cart/updateCartSku', { oldSkuId, newSku });
+    };
+
+    return {
+      checkOne,
+      checkAll,
+      deleteCart,
+      batchDeleteCart,
+      updateCount,
+      updateCartSku,
+    };
   },
 };
 </script>
