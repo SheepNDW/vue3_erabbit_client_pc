@@ -28,3 +28,21 @@ export const getGoodsSku = (skuId) => {
 export const mergeCart = (cartList) => {
   return request('/member/cart/merge', 'post', cartList)
 }
+
+/**
+ * 獲取登入後購物車列表
+ * @returns Promise
+ */
+export const findCart = () => {
+  return request('/member/cart', 'get')
+}
+
+/**
+ * 加入購物車
+ * @param {String} skuId - 商品SKUID
+ * @param {Integer} count - 商品數量
+ * @returns Promise
+ */
+export const insertCart = ({ skuId, count }) => {
+  return request('/member/cart', 'post', { skuId, count })
+}

@@ -1,6 +1,6 @@
 // 購物車模組
 
-import { getNewCartGoods, mergeCart } from "@/api/cart"
+import { findCart, getNewCartGoods, insertCart, mergeCart } from "@/api/cart"
 
 export default {
   namespaced: true,
@@ -93,7 +93,13 @@ export default {
     insertCart(ctx, payload) {
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
-          // TODO 已登入
+          // 已登入
+          insertCart({ skuId: payload.skuId, count: payload.count }).then(() => {
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登入
           ctx.commit('insertCart', payload)
@@ -105,7 +111,11 @@ export default {
     findCart(ctx) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // TODO 已登入
+          // 已登入
+          findCart().then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登入
           // 同時發送請求(有幾件商品就發幾次), 等所有請求成功, 一併去修改本地資料
