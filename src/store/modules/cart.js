@@ -1,6 +1,6 @@
 // 購物車模組
 
-import { deleteCart, findCart, getNewCartGoods, insertCart, mergeCart } from "@/api/cart"
+import { checkAllCart, deleteCart, findCart, getNewCartGoods, insertCart, mergeCart, updateCart } from "@/api/cart"
 
 export default {
   namespaced: true,
@@ -160,7 +160,13 @@ export default {
     updateCart(ctx, payload) {
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
-          // TODO 已登入
+          // 已登入
+          updateCart(payload).then(() => {
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登入
           // payload 需要: 必需有skuId 可能: selected count
@@ -173,7 +179,14 @@ export default {
     checkAllCart(ctx, selected) {
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
-          // TODO 已登入
+          // 已登入
+          const ids = ctx.getters.validList.map(item => item.skuId)
+          checkAllCart({ selected, ids }).then(() => {
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登入
           ctx.getters.validList.forEach(goods => {

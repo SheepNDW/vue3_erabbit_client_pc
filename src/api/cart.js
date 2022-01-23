@@ -56,4 +56,24 @@ export const deleteCart = (ids) => {
   return request('/member/cart', 'delete', { ids })
 }
 
+/**
+ * 修改購物車商品的狀態和數量
+ * @param {String} skuId - 商品sku
+ * @param {Boolean} selected - 選中狀態
+ * @param {Integer} count - 商品數量
+ * @returns Promise
+ */
+export const updateCart = ({ skuId, selected, count }) => {
+  return request(`/member/cart/${skuId}`, 'put', { selected, count })
+}
+
+/**
+ * 全選反選
+ * @param {Boolean} selected - 選中狀態
+ * @param {Array<string>} ids - 有效商品skuId集合
+ * @returns Promise
+ */
+export const checkAllCart = ({ selected, ids }) => {
+  return request('/member/cart/selected', 'put', { selected, ids })
+}
 
