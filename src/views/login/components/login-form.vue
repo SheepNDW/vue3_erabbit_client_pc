@@ -129,7 +129,7 @@ export default {
       isAgree: true,
       account: null,
       password: null,
-      moblie: null,
+      mobile: null,
       code: null,
     });
 
@@ -154,7 +154,7 @@ export default {
       form.isAgree = true;
       form.account = null;
       form.password = null;
-      form.moblie = null;
+      form.mobile = null;
       form.code = null;
       // 如果沒有銷毀Field元件, 之前的校驗結果是不會銷毀的 例如: v-show切換的
       // Form元件提供了一個 resetForm 函式清除校驗結果
@@ -181,8 +181,8 @@ export default {
             // 2.2 調用api函式
             // 2.3 成功: 儲存用戶訊息 + 跳轉至來源頁或是首頁 + 消息提示
             // 2.4 失敗: 消息提示
-            const { moblie, code } = form;
-            data = await userMobileLogin({ moblie, code });
+            const { mobile, code } = form;
+            data = await userMobileLogin({ mobile, code });
           } else {
             // **帳號登入
             // 1. 準備一個api做帳號登入
@@ -236,7 +236,7 @@ export default {
         // 通過
         if (timer.value === 0) {
           // 沒有倒計時才可以發送
-          await userMobileLoginMsg(form.moblie);
+          await userMobileLoginMsg(form.mobile);
           Message({ type: 'success', text: '發送成功! ' });
           timer.value = 60;
           resume();
