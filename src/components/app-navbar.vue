@@ -46,6 +46,8 @@ export default {
     const router = useRouter();
     const logout = () => {
       store.commit('user/setUser', {});
+      // 清空購物車
+      store.commit('cart/setCart', []);
       router.push('/login');
     };
 

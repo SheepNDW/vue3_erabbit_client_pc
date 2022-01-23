@@ -195,10 +195,12 @@ export default {
           // 儲存用戶訊息
           const { id, account, avatar, mobile, nickname, token } = data.result;
           store.commit('user/setUser', { id, account, avatar, mobile, nickname, token });
-          // 進行跳轉
-          router.push(route.query.redirectUrl || '/');
-          // 成功消息提示
-          Message({ type: 'success', text: '登入成功! ' });
+          store.dispatch('cart/mergeCart').then(() => {
+            // 進行跳轉
+            router.push(route.query.redirectUrl || '/');
+            // 成功消息提示
+            Message({ type: 'success', text: '登入成功! ' });
+          });
         } catch (err) {
           if (err.response.data) {
             Message({ type: 'error', text: err.response.data.message || '登入失敗! ' });

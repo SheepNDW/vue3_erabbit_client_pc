@@ -1,6 +1,6 @@
 // 購物車模組
 
-import { getNewCartGoods } from "@/api/cart"
+import { getNewCartGoods, mergeCart } from "@/api/cart"
 
 export default {
   namespaced: true,
@@ -81,6 +81,11 @@ export default {
     deleteCart(state, skuId) {
       const index = state.list.findIndex(item => item.skuId === skuId)
       state.list.splice(index, 1)
+    },
+    // 設置購物車
+    setCart(state, payload) {
+      // payload為空陣列, 清空 ; 為有值的陣列, 設置
+      state.list = payload
     }
   },
   actions: {
@@ -197,6 +202,20 @@ export default {
           resolve()
         }
       })
+    },
+    // 合併購物車
+    async mergeCart(ctx) {
+      // 合併參數
+      const cartList = ctx.state.list.map(goods => {
+        return {
+          skuId: goods.skuId,
+          selected: goods.selected,
+          count: goods.count
+        }
+      })
+      await mergeCart(cartList)
+      // 合併成功, 清空本地購物車
+      ctx.commit('setCart', [])
     }
   }
 }

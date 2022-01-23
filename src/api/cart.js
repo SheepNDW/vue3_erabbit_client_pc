@@ -17,3 +17,14 @@ export const getNewCartGoods = (skuId) => {
 export const getGoodsSku = (skuId) => {
   return request(`/goods/sku/${skuId}`, 'get')
 }
+
+/**
+ * 合併購物車
+ * @param {Array<object>} cartList - 購物車訊息列表
+ * @param {String} object.skuId - SKUID
+ * @param {boolean} object.selected - 選中狀態
+ * @param {integer} object.count - 數量
+ */
+export const mergeCart = (cartList) => {
+  return request('/member/cart/merge', 'post', cartList)
+}
