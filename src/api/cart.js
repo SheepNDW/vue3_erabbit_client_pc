@@ -46,3 +46,14 @@ export const findCart = () => {
 export const insertCart = ({ skuId, count }) => {
   return request('/member/cart', 'post', { skuId, count })
 }
+
+/**
+ * 刪除商品（支持批量刪除）
+ * @param {Array<string>} ids - skuId集合
+ * @returns Promise
+ */
+export const deleteCart = (ids) => {
+  return request('/member/cart', 'delete', { ids })
+}
+
+
