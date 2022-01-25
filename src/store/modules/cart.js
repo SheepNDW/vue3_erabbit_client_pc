@@ -223,7 +223,20 @@ export default {
     updateCartSku(ctx, { oldSkuId, newSku }) {
       return new Promise((resolve) => {
         if (ctx.rootState.user.profile.token) {
-          // TODO 已登入
+          // 已登入
+          // 1. 找出舊的商品訊息
+          // 2. 刪除舊商品資料
+          // 3. 原先商品的數量+新的skuId
+          // 4. 添加新的商品
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          deleteCart([oldGoods.skuId]).then(() => {
+            return insertCart({ skuId: newSku.skuId, count: oldGoods.count })
+          }).then(() => {
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登入
           // 1. 找出舊的商品訊息
