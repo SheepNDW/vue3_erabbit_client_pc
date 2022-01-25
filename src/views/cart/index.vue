@@ -134,7 +134,7 @@
           共 {{ $store.getters['cart/validTotal'] }} 件商品，已選擇
           {{ $store.getters['cart/selectedTotal'] }} 件，商品合計：
           <span class="red">¥{{ $store.getters['cart/selectedAmount'] }}</span>
-          <XtxButton type="primary">下單結帳</XtxButton>
+          <XtxButton @click="checkout()" type="primary">下單結帳</XtxButton>
         </div>
       </div>
       <!-- 猜你喜歡 -->
@@ -149,6 +149,7 @@ import CartSku from './components/cart-sku';
 import { useStore } from 'vuex';
 import Message from '@/components/library/Message';
 import Confirm from '@/components/library/Confirm';
+import { useRouter } from 'vue-router';
 export default {
   name: 'XtxCartPage',
   components: { GoodRelevant, CartNone, CartSku },
@@ -195,6 +196,22 @@ export default {
       store.dispatch('cart/updateCartSku', { oldSkuId, newSku });
     };
 
+    // 結算
+    const router = useRouter();
+    const checkout = () => {
+      // 1. 判斷是否選中商品且提示
+      // 2. 彈出確認框, 提示: 下單結算需要登入
+      // 3. 使用導航守衛, 遇見需要登入的路由跳轉, 攔截到登入頁面
+      if (store.getters['cart/selectedList'].length === 0) {
+        return Message({ text: '請至少勾選一樣商品' });
+      }
+      Confirm({ text: '下單結算需要登入, 現在去登入嗎?' })
+        .then(() => {
+          router.push('/member/checkout');
+        })
+        .catch(() => {});
+    };
+
     return {
       checkOne,
       checkAll,
@@ -202,6 +219,7 @@ export default {
       batchDeleteCart,
       updateCount,
       updateCartSku,
+      checkout,
     };
   },
 };
