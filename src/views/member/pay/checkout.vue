@@ -11,7 +11,7 @@
         <h3 class="box-title">取貨地址</h3>
         <div class="box-body">
           <!-- 取貨地址元件 -->
-          <CheckoutAddress :list="order.userAddresses" />
+          <CheckoutAddress @change="changeAddress" :list="order.userAddresses" />
         </div>
         <!-- 商品資訊 -->
         <h3 class="box-title">商品信息</h3>
@@ -103,7 +103,14 @@ export default {
       order.value = data.result;
     });
 
-    return { order };
+    // 提交訂單: 需要取貨地址id
+    const addressId = ref(null);
+    const changeAddress = id => {
+      addressId.value = id;
+      console.log(id);
+    };
+
+    return { order, changeAddress };
   },
 };
 </script>
