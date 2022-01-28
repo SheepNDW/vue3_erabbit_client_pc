@@ -18,10 +18,10 @@
     </div>
     <div class="action">
       <XtxButton @click="openDialog" class="btn">切換地址</XtxButton>
-      <XtxButton class="btn">新增地址</XtxButton>
+      <XtxButton @click="openAddressEdit" class="btn">新增地址</XtxButton>
     </div>
   </div>
-  <!-- 對話框元件 -->
+  <!-- 對話框元件-切換取貨地址 -->
   <XtxDialog title="切換取貨地址" v-model:visible="visibleDialog">
     <div
       @click="selectedAddress = item"
@@ -50,11 +50,15 @@
       <XtxButton @click="confirmAddressFn" type="primary">確認</XtxButton>
     </template>
   </XtxDialog>
+  <!-- 取貨地址-新增&編輯元件 -->
+  <AddressEdit ref="addressEditCom" />
 </template>
 <script>
 import { ref } from 'vue';
+import AddressEdit from './address-edit.vue';
 export default {
   name: 'CheckoutAddress',
+  components: { AddressEdit },
   props: {
     // 取貨地址列表
     list: {
@@ -96,14 +100,27 @@ export default {
       emit('change', selectedAddress.value?.id);
       visibleDialog.value = false;
     };
-
     const openDialog = () => {
       // 將之前選中的資料清空
       selectedAddress.value = null;
       visibleDialog.value = true;
     };
 
-    return { showAddress, visibleDialog, selectedAddress, confirmAddressFn, openDialog };
+    // 打開新增&編輯取貨地址元件
+    const addressEditCom = ref(null);
+    const openAddressEdit = () => {
+      addressEditCom.value.open();
+    };
+
+    return {
+      showAddress,
+      visibleDialog,
+      selectedAddress,
+      confirmAddressFn,
+      openDialog,
+      openAddressEdit,
+      addressEditCom,
+    };
   },
 };
 </script>
@@ -111,17 +128,17 @@ export default {
 <style lang="scss" scoped>
 .xtx-dialog {
   // 產生滾動條
-  ::v-deep(.body) {
-    max-height: 400px;
-    overflow-y: auto;
+  :deep(.wrapper) {
+    .body {
+      max-height: 600px;
+      overflow-y: auto;
+    }
   }
   .text {
     flex: 1;
     min-height: 90px;
-    max-height: 400px;
     display: flex;
     align-items: center;
-    overflow: auto;
     &.item {
       border: 1px solid #f5f5f5;
       margin-bottom: 10px;
