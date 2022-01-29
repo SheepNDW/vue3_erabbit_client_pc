@@ -9,3 +9,23 @@ import request from "@/utils/request";
 export const createOrder = () => {
   return request('/member/order/pre', 'get')
 }
+
+
+
+/**
+ * 新增取貨地址
+ * @param {Object} address - 地址物件
+ * @returns Promise
+ */
+export const addAddress = (address) => {
+  return request('/member/address', 'post', address)
+}
+
+/**
+ * 修改取貨地址信息
+ * @param {Object} address - 地址物件
+ */
+export const editAddress = (address) => {
+  return request(`/member/address/${address.id}`, 'put', address)
+}
+

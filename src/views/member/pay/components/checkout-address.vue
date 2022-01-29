@@ -8,17 +8,20 @@
         </li>
         <li>
           <span>聯絡方式：</span
-          >{{ showAddress.contact.replace(/^(d{3})\d{4}(\d{4})/, '$1****$2') }}
+          >{{ showAddress.contact.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') }}
         </li>
         <li>
-          <span>取貨地址：</span>{{ showAddress.fullLocation }}{{ showAddress.address }}
+          <span>取貨地址：</span>{{ showAddress.fullLocation.replace(/ /g, '')
+          }}{{ showAddress.address }}
         </li>
       </ul>
-      <a v-if="showAddress" href="javascript:;">修改地址</a>
+      <a @click="openAddressEdit(showAddress)" v-if="showAddress" href="javascript:;"
+        >修改地址</a
+      >
     </div>
     <div class="action">
       <XtxButton @click="openDialog" class="btn">切換地址</XtxButton>
-      <XtxButton @click="openAddressEdit" class="btn">新增地址</XtxButton>
+      <XtxButton @click="openAddressEdit({})" class="btn">新增地址</XtxButton>
     </div>
   </div>
   <!-- 對話框元件-切換取貨地址 -->
@@ -36,7 +39,7 @@
         </li>
         <li>
           <span>聯絡方式：</span
-          >{{ item.contact.replace(/^(d{3})\d{4}(\d{4})/, '$1****$2') }}
+          >{{ item.contact.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') }}
         </li>
         <li>
           <span>取貨地址：</span>{{ item.fullLocation.replace(/ /g, '') + item.address }}
@@ -51,7 +54,7 @@
     </template>
   </XtxDialog>
   <!-- 取貨地址-新增&編輯元件 -->
-  <AddressEdit ref="addressEditCom" />
+  <AddressEdit @on-success="successHandler" ref="addressEditCom" />
 </template>
 <script>
 import { ref } from 'vue';
@@ -108,8 +111,27 @@ export default {
 
     // 打開新增&編輯取貨地址元件
     const addressEditCom = ref(null);
-    const openAddressEdit = () => {
-      addressEditCom.value.open();
+    const openAddressEdit = address => {
+      // 新增: {} 修改: {資料}
+      addressEditCom.value.open(address);
+    };
+
+    const successHandler = formData => {
+      // 根據formData中的id去當前地址列表中查找, 有就是修改, 否則是新增
+      const address = props.list.find(item => item.id === formData.id);
+      if (address) {
+        for (const key in address) {
+          address[key] = formData[key];
+        }
+      } else {
+        // 如果是新增: 往list中追加一條
+        // 當你在修改formData的時候, 陣列中的資料也會更新, 因為是同一個引用地址
+        // 啥時修改formData, 當打開對話框時會清空之前輸入的資訊
+        // 要深拷貝formData資料
+        const jsonStr = JSON.stringify(formData);
+        // eslint-disable-next-line vue/no-mutating-props
+        props.list.unshift(JSON.parse(jsonStr));
+      }
     };
 
     return {
@@ -120,6 +142,7 @@ export default {
       openDialog,
       openAddressEdit,
       addressEditCom,
+      successHandler,
     };
   },
 };
