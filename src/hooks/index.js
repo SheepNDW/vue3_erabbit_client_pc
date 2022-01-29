@@ -1,6 +1,8 @@
 // 提供複用邏輯的函式(鉤子)
-import { useIntersectionObserver } from '@vueuse/core'
-import { ref } from 'vue'
+import { useIntersectionObserver, useIntervalFn } from '@vueuse/core'
+import { ref, onUnmounted } from 'vue'
+import dayjs from 'dayjs';
+
 /**
  * 資料懶加載函式
  * @param {Element} target - DOM物件
@@ -29,4 +31,37 @@ export const useLazyData = (apiFn) => {
     }
   )
   return { result, target }
+}
+
+/**
+ * 支付倒計時函式
+ */
+export const usePayTime = () => {
+  // 倒計時邏輯
+  const time = ref(0)
+  const timeText = ref('')
+  const { pause, resume } = useIntervalFn(
+    () => {
+      time.value--
+      timeText.value = dayjs.unix(time.value).format('mm分ss秒')
+      if (time.value <= 0) pause()
+    },
+    1000,
+    false
+  );
+  onUnmounted(() => {
+    pause()
+  })
+
+  // 開啟定時器 countdown - 倒計時時間
+  const start = (countdown) => {
+    time.value = countdown
+    timeText.value = dayjs.unix(time.value).format('mm分ss秒')
+    resume()
+  }
+
+  return {
+    start,
+    timeText
+  }
 }
