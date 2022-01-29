@@ -35,3 +35,11 @@ export const submitOrder = (order) => {
   return request('/member/order', 'post', order)
 }
 
+/**
+ * 獲取訂單詳情
+ * @param {String} id - 訂單ID
+ */
+export const findOrderDetail = (id) => {
+  return request('/member/order/' + id, 'get')
+}
+
