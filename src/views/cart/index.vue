@@ -205,6 +205,11 @@ export default {
       if (store.getters['cart/selectedList'].length === 0) {
         return Message({ text: '請至少勾選一樣商品' });
       }
+      // 如果登入直接跳轉
+      if (store.state.user.profile.token) {
+        return router.push('/member/checkout');
+      }
+      // 未登入
       Confirm({ text: '下單結算需要登入, 現在去登入嗎?' })
         .then(() => {
           router.push('/member/checkout');
