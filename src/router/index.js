@@ -11,6 +11,7 @@ const Cart = () => import('@/views/cart/index')
 const Login = () => import('@/views/login/index')
 
 const Checkout = () => import('@/views/member/pay/checkout')
+const Pay = () => import('@/views/member/pay/index')
 
 const routes = [
   // 一級路由布局容器
@@ -24,6 +25,7 @@ const routes = [
       { path: '/product/:id', component: Goods },
       { path: '/cart', component: Cart },
       { path: '/member/checkout', component: Checkout },
+      { path: '/member/pay', component: Pay },
     ]
   },
   {
