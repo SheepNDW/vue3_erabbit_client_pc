@@ -28,7 +28,12 @@
         <div class="item">
           <p>支付平台</p>
           <a class="btn wx" href="javascript:;"></a>
-          <a class="btn alipay" href="javascript:;"></a>
+          <a
+            class="btn alipay"
+            @click="visibleDialog = true"
+            :href="payUrl"
+            target="_blnak"
+          ></a>
         </div>
         <div class="item">
           <p>支付方式</p>
@@ -40,6 +45,20 @@
         </div>
       </div>
     </div>
+    <!-- 支付提示對話框 -->
+    <XtxDialog title="正在支付..." v-model:visible="visibleDialog">
+      <div class="pay-wait">
+        <img src="@/assets/images/load.gif" alt="" />
+        <div v-if="order">
+          <p>如果支付成功：</p>
+          <RouterLink :to="`/member/order/${$route.query.orderId}`"
+            >查看訂單詳情></RouterLink
+          >
+          <p>如果支付失敗：</p>
+          <RouterLink to="/">查看相關疑問></RouterLink>
+        </div>
+      </div>
+    </XtxDialog>
   </div>
 </template>
 <script>
@@ -47,6 +66,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { findOrderDetail } from '@/api/order';
 import { usePayTime } from '@/hooks';
+import { baseURL } from '@/utils/request';
 export default {
   name: 'XtxPayPage',
   setup() {
@@ -61,9 +81,17 @@ export default {
       }
     });
 
+    // 計時器工具函式
     const { start, timeText } = usePayTime();
 
-    return { order, timeText };
+    // 支付地址
+    // const payUrl = '後臺服務基準地址 + 支付頁面地址 + 訂單ID + 回跳地址'
+    const redirect = encodeURIComponent('http://localhost:8080/#/pay/callback');
+    const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`;
+
+    const visibleDialog = ref(false);
+
+    return { order, timeText, payUrl, visibleDialog };
   },
 };
 </script>
@@ -140,6 +168,17 @@ export default {
       background: url(https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/c66f98cff8649bd5ba722c2e8067c6ca.jpg)
         no-repeat center / contain;
     }
+  }
+}
+.pay-wait {
+  display: flex;
+  justify-content: space-around;
+  p {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+  a {
+    color: $xtxColor;
   }
 }
 </style>
