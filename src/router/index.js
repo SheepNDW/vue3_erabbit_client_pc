@@ -15,6 +15,7 @@ const Pay = () => import('@/views/member/pay/index')
 const PayResult = () => import('@/views/member/pay/result')
 
 const MemberLayout = () => import('@/views/member/Layout')
+const MemberHome = () => import('@/views/member/home')
 
 const routes = [
   // 一級路由布局容器
@@ -30,7 +31,13 @@ const routes = [
       { path: '/member/checkout', component: Checkout },
       { path: '/member/pay', component: Pay },
       { path: '/pay/callback', component: PayResult },
-      { path: '/member', component: MemberLayout },
+      {
+        path: '/member',
+        component: MemberLayout,
+        children: [
+          { path: '/member', component: MemberHome }
+        ]
+      },
     ]
   },
   {
