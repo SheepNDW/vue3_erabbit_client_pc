@@ -4,14 +4,14 @@
       <ul>
         <template v-if="profile.token">
           <li>
-            <a href="javascript:;">
+            <RouterLink to="/member">
               <i class="iconfont icon-user"></i>{{ profile.account }}
-            </a>
+            </RouterLink>
           </li>
           <li><a @click="logout" href="javascript:;">退出登入</a></li>
         </template>
         <template v-else>
-          <li><router-link to="/login">請先登入</router-link></li>
+          <li><RouterLink to="/login">請先登入</RouterLink></li>
           <li><a href="javascript:;">免費註冊</a></li>
         </template>
         <li><a href="javascript:;">我的訂單</a></li>
