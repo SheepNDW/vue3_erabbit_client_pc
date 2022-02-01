@@ -3,7 +3,7 @@
     <div class="user-manage">
       <h4>我的帳戶</h4>
       <div class="links">
-        <a href="javascript:;">個人中心</a>
+        <RouterLink exact-active-class="active" to="/member">個人中心</RouterLink>
         <a href="javascript:;">消息通知</a>
         <a href="javascript:;">個人信息</a>
         <a href="javascript:;">安全設置</a>
@@ -15,7 +15,7 @@
       </div>
       <h4>交易管理</h4>
       <div class="links">
-        <a href="javascript:;">我的訂單</a>
+        <RouterLink active-class="active" to="/member/order">我的訂單</RouterLink>
         <a href="javascript:;">優惠券</a>
         <a href="javascript:;">禮品卡</a>
         <a href="javascript:;">評價晒單</a>
