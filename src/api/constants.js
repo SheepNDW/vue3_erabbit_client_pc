@@ -12,3 +12,15 @@ export const topCategory = [
   '運動',
   '雜貨'
 ]
+
+// 訂單狀態
+export const orderStatus = [
+  { name: 'all', label: '全部訂單' },
+  { name: 'unpay', label: '待付款' },
+  { name: 'deliver', label: '待發貨' },
+  { name: 'receive', label: '待收貨' },
+  { name: 'comment', label: '待評價' },
+  { name: 'complete', label: '已完成' },
+  { name: 'cancel', label: '已取消' }
+]
+
