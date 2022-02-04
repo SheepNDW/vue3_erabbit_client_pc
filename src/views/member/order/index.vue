@@ -1,7 +1,7 @@
 <template>
   <div class="member-order">
     <!-- tab元件 -->
-    <XtxTabs v-model="activeName">
+    <XtxTabs v-model="activeName" @tab-click="tabClick">
       <XtxTabsPanel
         v-for="item in orderStatus"
         :key="item.name"
@@ -11,16 +11,24 @@
     </XtxTabs>
     <!-- 訂單列表 -->
     <div class="order-list">
+      <div v-if="loading" class="loading"></div>
+      <div class="none" v-if="!loading && orderList.length === 0">暫無資料</div>
       <OrderItem v-for="item in orderList" :key="item.id" :order="item" />
     </div>
 
     <!-- 分頁元件 -->
-    <XtxPagination />
+    <XtxPagination
+      v-if="total > 0"
+      :current-page="reqParams.page"
+      :page-size="reqParams.pageSize"
+      :total="total"
+      @current-change="reqParams.page = $event"
+    />
   </div>
 </template>
 
 <script>
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { orderStatus } from '@/api/constants.js';
 import OrderItem from './components/order-item.vue';
 import { findOrderList } from '@/api/order';
@@ -30,18 +38,36 @@ export default {
   setup() {
     const activeName = ref('all');
 
-    // 獲取資料
+    // 篩選條件
     const reqParams = reactive({
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       orderState: 0,
     });
     const orderList = ref([]);
-    findOrderList(reqParams).then(data => {
-      orderList.value = data.result.items;
-    });
+    const loading = ref(false);
+    const total = ref(0);
+    // 篩選條件發生變化重新加載
+    watch(
+      reqParams,
+      () => {
+        loading.value = true;
+        findOrderList(reqParams).then(data => {
+          orderList.value = data.result.items;
+          total.value = data.result.counts;
+          loading.value = false;
+        });
+      },
+      { immediate: true }
+    );
 
-    return { activeName, orderStatus, orderList };
+    // 點擊選項卡
+    const tabClick = ({ index }) => {
+      reqParams.page = 1;
+      reqParams.orderState = index;
+    };
+
+    return { activeName, orderStatus, orderList, tabClick, loading, total, reqParams };
   },
 };
 </script>
@@ -54,5 +80,22 @@ export default {
 .order-list {
   background: #fff;
   padding: 20px;
+  position: relative;
+  min-height: 400px;
+}
+.loading {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.9) url(../../../assets/images/loading.gif) no-repeat
+    center;
+}
+.none {
+  height: 400px;
+  text-align: center;
+  line-height: 400px;
+  color: #999;
 }
 </style>
