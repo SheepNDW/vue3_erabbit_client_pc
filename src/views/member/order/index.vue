@@ -13,7 +13,12 @@
     <div class="order-list">
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderList.length === 0">暫無資料</div>
-      <OrderItem v-for="item in orderList" :key="item.id" :order="item" />
+      <OrderItem
+        @on-cancel="handlerCancel"
+        v-for="item in orderList"
+        :key="item.id"
+        :order="item"
+      />
     </div>
 
     <!-- 分頁元件 -->
@@ -24,17 +29,21 @@
       :total="total"
       @current-change="reqParams.page = $event"
     />
+
+    <!-- 取消原因元件 -->
+    <OrderCancel ref="orderCancelCom" />
   </div>
 </template>
 
 <script>
 import { reactive, ref, watch } from 'vue';
 import { orderStatus } from '@/api/constants.js';
-import OrderItem from './components/order-item.vue';
 import { findOrderList } from '@/api/order';
+import OrderItem from './components/order-item.vue';
+import OrderCancel from './components/order-cancel.vue';
 export default {
   name: 'MemberOrder',
-  components: { OrderItem },
+  components: { OrderItem, OrderCancel },
   setup() {
     const activeName = ref('all');
 
@@ -67,8 +76,28 @@ export default {
       reqParams.orderState = index;
     };
 
-    return { activeName, orderStatus, orderList, tabClick, loading, total, reqParams };
+    return {
+      activeName,
+      orderStatus,
+      orderList,
+      tabClick,
+      loading,
+      total,
+      reqParams,
+      ...useCancel(),
+    };
   },
+};
+// 取消訂單邏輯
+const useCancel = () => {
+  // 元件實例
+  const orderCancelCom = ref(null);
+  // 點擊取消
+  const handlerCancel = order => {
+    orderCancelCom.value.open(order);
+  };
+
+  return { handlerCancel, orderCancelCom };
 };
 </script>
 

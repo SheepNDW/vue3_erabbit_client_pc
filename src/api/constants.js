@@ -24,3 +24,12 @@ export const orderStatus = [
   { name: 'cancel', label: '已取消' }
 ]
 
+
+export const cancelReason = [
+  '配送信息有誤',
+  '商品買錯了',
+  '重複下單/誤下單',
+  '忘記使用優惠券、兔幣等',
+  '其他渠道價格更低',
+  '不想買了'
+]
