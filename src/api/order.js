@@ -64,3 +64,11 @@ export const cancelOrder = ({ orderId, cancelReason }) => {
   return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
 }
 
+/**
+ * 刪除訂單
+ * @param {String} orderId - 訂單ID
+ * @returns 
+ */
+export const deleteOrder = (orderId) => {
+  return request(`/member/order`, 'delete', { ids: [orderId] })
+}

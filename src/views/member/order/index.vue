@@ -15,6 +15,7 @@
       <div class="none" v-if="!loading && orderList.length === 0">暫無資料</div>
       <OrderItem
         @on-cancel="handlerCancel"
+        @on-delete="handlerDelete"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -38,9 +39,11 @@
 <script>
 import { reactive, ref, watch } from 'vue';
 import { orderStatus } from '@/api/constants.js';
-import { findOrderList } from '@/api/order';
+import { deleteOrder, findOrderList } from '@/api/order';
 import OrderItem from './components/order-item.vue';
 import OrderCancel from './components/order-cancel.vue';
+import Confirm from '@/components/library/Confirm';
+import Message from '@/components/library/Message';
 export default {
   name: 'MemberOrder',
   components: { OrderItem, OrderCancel },
@@ -56,16 +59,20 @@ export default {
     const orderList = ref([]);
     const loading = ref(false);
     const total = ref(0);
+
+    const getOrderList = () => {
+      loading.value = true;
+      findOrderList(reqParams).then(data => {
+        orderList.value = data.result.items;
+        total.value = data.result.counts;
+        loading.value = false;
+      });
+    };
     // 篩選條件發生變化重新加載
     watch(
       reqParams,
       () => {
-        loading.value = true;
-        findOrderList(reqParams).then(data => {
-          orderList.value = data.result.items;
-          total.value = data.result.counts;
-          loading.value = false;
-        });
+        getOrderList();
       },
       { immediate: true }
     );
@@ -76,6 +83,18 @@ export default {
       reqParams.orderState = index;
     };
 
+    // 刪除訂單
+    const handlerDelete = order => {
+      Confirm({ text: '您確認要刪除該筆訂單嗎?' })
+        .then(() => {
+          deleteOrder(order.id).then(() => {
+            Message({ type: 'success', text: '成功刪除訂單' });
+            getOrderList();
+          });
+        })
+        .catch(() => {});
+    };
+
     return {
       activeName,
       orderStatus,
@@ -84,6 +103,7 @@ export default {
       loading,
       total,
       reqParams,
+      handlerDelete,
       ...useCancel(),
     };
   },
