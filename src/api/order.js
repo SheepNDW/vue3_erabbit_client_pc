@@ -81,3 +81,12 @@ export const deleteOrder = (orderId) => {
 export const confirmOrder = (orderId) => {
   return request(`/member/order/${orderId}/receipt`, 'put')
 }
+
+/**
+ * 查詢物流
+ * @param {String} orderId - 訂單ID
+ * @returns 
+ */
+export const logisticsOrder = (orderId) => {
+  return request(`/member/order/${orderId}/logistics`, 'get')
+}

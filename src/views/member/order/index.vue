@@ -17,6 +17,7 @@
         @on-cancel="handlerCancel"
         @on-delete="handlerDelete"
         @on-confirm="handlerConfirm"
+        @on-logistics="handlerLogistics"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -34,6 +35,8 @@
 
     <!-- 取消原因元件 -->
     <OrderCancel ref="orderCancelCom" />
+    <!-- 查看物流元件 -->
+    <OrderLogistics ref="orderLogisticsCom" />
   </div>
 </template>
 
@@ -43,11 +46,12 @@ import { orderStatus } from '@/api/constants.js';
 import { confirmOrder, deleteOrder, findOrderList } from '@/api/order';
 import OrderItem from './components/order-item.vue';
 import OrderCancel from './components/order-cancel.vue';
+import OrderLogistics from './components/order-logistics.vue';
 import Confirm from '@/components/library/Confirm';
 import Message from '@/components/library/Message';
 export default {
   name: 'MemberOrder',
-  components: { OrderItem, OrderCancel },
+  components: { OrderItem, OrderCancel, OrderLogistics },
   setup() {
     const activeName = ref('all');
 
@@ -107,6 +111,7 @@ export default {
       handlerDelete,
       ...useCancel(),
       ...useConfirm(),
+      ...useLogistics(),
     };
   },
 };
@@ -136,6 +141,15 @@ const useConfirm = () => {
   };
 
   return { handlerConfirm };
+};
+// 查看物流邏輯
+const useLogistics = () => {
+  const orderLogisticsCom = ref(null);
+  const handlerLogistics = order => {
+    orderLogisticsCom.value.open(order);
+  };
+
+  return { handlerLogistics, orderLogisticsCom };
 };
 </script>
 

@@ -19,7 +19,7 @@
       <div class="column goods">
         <ul>
           <li v-for="goods in order.skus" :key="goods.id">
-            <RouterLink class="image" :to="`/product/${goods.id}`">
+            <RouterLink class="image" :to="`/product/${goods.spuid}`">
               <img :src="goods.image" alt="" />
             </RouterLink>
             <div class="info">
@@ -36,7 +36,7 @@
         <!-- 待收貨：查看物流 -->
         <!-- 待評價：評價商品 -->
         <!-- 已完成：查看評價 -->
-        <p v-if="order.orderState === 3">
+        <p @click="$emit('on-logistics', order)" v-if="order.orderState === 3">
           <a class="green" href="javascript:;">查看物流</a>
         </p>
         <p v-if="order.orderState === 4">
@@ -102,7 +102,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ['on-cancel', 'on-delete', 'on-confirm'],
+  emits: ['on-cancel', 'on-delete', 'on-confirm', 'on-logistics'],
   setup(props) {
     const { start, timeText } = usePayTime();
     start(props.order.countdown);
