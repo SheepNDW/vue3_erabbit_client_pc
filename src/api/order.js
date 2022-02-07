@@ -3,11 +3,19 @@
 import request from "@/utils/request";
 
 /**
- * 結算頁面-生成訂單
+ * 結算頁面-生成訂單-根據購物車選中商品
  * @returns Promise
  */
 export const createOrder = () => {
   return request('/member/order/pre', 'get')
+}
+
+/**
+ * 結算頁面-生成訂單-根據訂單商品(再次購買)
+ * @returns Promise
+ */
+export const repurchaseOrder = (orderId) => {
+  return request(`/member/order/repurchase/${orderId}`, 'get')
 }
 
 /**

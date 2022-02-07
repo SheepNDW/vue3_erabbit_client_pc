@@ -23,22 +23,44 @@
       </template>
       <!-- 待發貨 -->
       <template v-if="order.orderState === 2">
-        <XtxButton type="primary" size="small">再次購買</XtxButton>
+        <XtxButton
+          @click="$router.push(`/member/checkout?orderId=${order.id}`)"
+          type="primary"
+          size="small"
+          >再次購買</XtxButton
+        >
       </template>
       <!-- 待收貨 -->
       <template v-if="order.orderState === 3">
-        <XtxButton type="primary" size="small">確認收貨</XtxButton>
-        <XtxButton type="plain" size="small">再次購買</XtxButton>
+        <XtxButton @click="handlerConfirm(order)" type="primary" size="small"
+          >確認收貨</XtxButton
+        >
+        <XtxButton
+          @click="$router.push(`/member/checkout?orderId=${order.id}`)"
+          type="plain"
+          size="small"
+          >再次購買</XtxButton
+        >
       </template>
       <!-- 待評價 -->
       <template v-if="order.orderState === 4">
-        <XtxButton type="primary" size="small">再次購買</XtxButton>
+        <XtxButton
+          @click="$router.push(`/member/checkout?orderId=${order.id}`)"
+          type="primary"
+          size="small"
+          >再次購買</XtxButton
+        >
         <XtxButton type="plain" size="small">評價商品</XtxButton>
         <XtxButton type="gray" size="small">申請售後</XtxButton>
       </template>
       <!-- 已完成 -->
       <template v-if="order.orderState === 5">
-        <XtxButton type="primary" size="small">再次購買</XtxButton>
+        <XtxButton
+          @click="$router.push(`/member/checkout?orderId=${order.id}`)"
+          type="primary"
+          size="small"
+          >再次購買</XtxButton
+        >
         <XtxButton type="plain" size="small">查看評價</XtxButton>
         <XtxButton type="gray" size="small">申請售後</XtxButton>
       </template>
@@ -52,7 +74,7 @@
 <script>
 import { orderStatus } from '@/api/constants';
 import OrderCancel from './order-cancel.vue';
-import { useCancel } from '../index.vue';
+import { useCancel, useConfirm } from '../index.vue';
 export default {
   name: 'OrderDetailAction',
   props: {
@@ -63,7 +85,7 @@ export default {
   },
   components: { OrderCancel },
   setup() {
-    return { orderStatus, ...useCancel() };
+    return { orderStatus, ...useCancel(), ...useConfirm() };
   },
 };
 </script>

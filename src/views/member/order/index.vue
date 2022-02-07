@@ -127,7 +127,7 @@ export const useCancel = () => {
   return { handlerCancel, orderCancelCom };
 };
 // 確認收貨邏輯
-const useConfirm = () => {
+export const useConfirm = () => {
   const handlerConfirm = order => {
     Confirm({ text: '您確認已收貨嗎? 確認後貨款將轉給賣方帳號' })
       .then(() => {

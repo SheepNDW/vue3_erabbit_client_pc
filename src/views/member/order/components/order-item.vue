@@ -80,7 +80,10 @@
         <p @click="$emit('on-cancel', order)" v-if="order.orderState === 1">
           <a href="javascript:;">取消訂單</a>
         </p>
-        <p v-if="[2, 3, 4, 5].includes(order.orderState)">
+        <p
+          @click="$router.push(`/member/checkout?orderId=${order.id}`)"
+          v-if="[2, 3, 4, 5].includes(order.orderState)"
+        >
           <a href="javascript:;">再次購買</a>
         </p>
         <p v-if="[4, 5].includes(order.orderState)">
