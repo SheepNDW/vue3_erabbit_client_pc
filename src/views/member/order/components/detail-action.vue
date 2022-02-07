@@ -17,7 +17,9 @@
           size="small"
           >立即付款</XtxButton
         >
-        <XtxButton type="gray" size="small">取消訂單</XtxButton>
+        <XtxButton @click="handlerCancel(order)" type="gray" size="small"
+          >取消訂單</XtxButton
+        >
       </template>
       <!-- 待發貨 -->
       <template v-if="order.orderState === 2">
@@ -42,10 +44,15 @@
       </template>
       <!-- 已取消 -->
     </div>
+    <Teleport to="#model">
+      <OrderCancel ref="orderCancelCom" />
+    </Teleport>
   </div>
 </template>
 <script>
 import { orderStatus } from '@/api/constants';
+import OrderCancel from './order-cancel.vue';
+import { useCancel } from '../index.vue';
 export default {
   name: 'OrderDetailAction',
   props: {
@@ -54,8 +61,9 @@ export default {
       default: () => ({}),
     },
   },
+  components: { OrderCancel },
   setup() {
-    return { orderStatus };
+    return { orderStatus, ...useCancel() };
   },
 };
 </script>

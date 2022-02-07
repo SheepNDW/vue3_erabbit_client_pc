@@ -116,7 +116,7 @@ export default {
   },
 };
 // 取消訂單邏輯
-const useCancel = () => {
+export const useCancel = () => {
   // 元件實例
   const orderCancelCom = ref(null);
   // 點擊取消
