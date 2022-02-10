@@ -3,7 +3,9 @@ import store from "@/store";
 import router from "@/router";
 
 // 匯出基準地址, 給其他不是通過axios發請求的地方用
-export const baseURL = 'http://pcapi-xiaotuxian-front-devtest.itheima.net/'
+// http//pcapi-xiaotuxian-front-devtest.itheima.net/
+// https://apipc-xiaotuxian-front.itheima.net/
+export const baseURL = '//pcapi-xiaotuxian-front-devtest.itheima.net/'
 const instance = axios.create({
   // axios常見配置, baseURL timeout
   baseURL,
